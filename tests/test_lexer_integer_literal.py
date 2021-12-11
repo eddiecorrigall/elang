@@ -1,6 +1,6 @@
 from lexer.errors import LexerSyntaxError
-from lexer.tokens import IntegerLiteral, Operator
-from tests import LexerTestBase
+from lexer.tokens import Literal, Operator
+from tests.lexer_test_base import LexerTestBase
 
 
 class TestIntegerLiteral(LexerTestBase):
@@ -16,37 +16,29 @@ class TestIntegerLiteral(LexerTestBase):
                 with self.assertRaises(LexerSyntaxError):
                     self.when_lex()
     
-    def test_negative_zero(self):
+    def test_negate_zero(self):
         # Not handled by lexer
         self.given_input('-0')
         self.when_lex()
-        self.then_return_tokens([
-            Operator.SUBTRACT,
-            IntegerLiteral('0'),
-        ])
+        self.then_return_tokens([Operator.SUBTRACT, Literal.INT])
+        self.then_return_values([None, '0'])
             
     def test_zero(self):
         self.given_input('0')
         self.when_lex()
-        self.then_return_tokens([
-            IntegerLiteral('0')
-        ])
+        self.then_return_literal(Literal.INT, '0')
 
     def test_positive_integers(self):
         for input, expected in [('5', '5'), ('25', '25'), ('123', '123')]:
             with self.subTest('test positive integer {}'.format(input)):
                 self.given_input(input)
                 self.when_lex()
-                self.then_return_tokens([
-                    IntegerLiteral(expected)
-                ])
+                self.then_return_literal(Literal.INT, expected)
 
     def test_negative_integers(self):
         for input, expected in [('-2', '2'), ('-32', '32'), ('-100', '100')]:
             with self.subTest('test negative integer {}'.format(input)):
                 self.given_input(input)
                 self.when_lex()
-                self.then_return_tokens([
-                    Operator.SUBTRACT,
-                    IntegerLiteral(expected)
-                ])
+                self.then_return_tokens([Operator.SUBTRACT, Literal.INT])
+                self.then_return_values([None, expected])

@@ -2,7 +2,8 @@ from collections.abc import Iterable
 from typing import List
 import unittest
 
-from lexer import Lexer, Token, CharacterLiteral
+from lexer.lexer import Lexer
+from lexer.tokens import Literal, Token
 
 
 # Use global - should not accumulate state
@@ -25,17 +26,23 @@ class LexerTestBase(unittest.TestCase):
     def then_return_iterable(self):
         self.assertTrue(isinstance(self.output, Iterable))
     
-    def then_return_character_literal(self, value: str):
+    def then_return_literal(self, expected_literal: Literal, expected_value: str):
         self.then_return_iterable()
         self.assertEqual(1, len(self.output))
-        self.assertTrue(isinstance(self.output[0].token, CharacterLiteral))
-        self.assertEqual(self.output[0].value, value)
+        self.assertEqual(expected_literal, self.output[0].token)
+        self.assertEqual(expected_value, self.output[0].value)
 
     def then_return_tokens(self, expected_tokens: List[Token]):
         self.then_return_iterable()
         self.assertEqual(
             expected_tokens,
             [lexer_output.token for lexer_output in self.output])
+
+    def then_return_values(self, expected_values: List[str]):
+        self.then_return_iterable()
+        self.assertEqual(
+            expected_values,
+            [lexer_output.value for lexer_output in self.output])
 
     def then_return_token(self, expected_token: Token):
         self.then_return_tokens([expected_token])

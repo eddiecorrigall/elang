@@ -1,6 +1,5 @@
-from lexer import Identifier, LexerSyntaxError
-from lexer import Keyword
-from lexer.tokens import Operator
+from lexer.errors import LexerSyntaxError
+from lexer.tokens import Identifier, Keyword, Operator
 from tests.lexer_test_base import LexerTestBase
 
 
@@ -16,9 +15,8 @@ class TestWhitespace(LexerTestBase):
     def test_keyword_without_whitespace(self):
         self.given_input('ifprint')
         self.when_lex()
-        self.then_return_tokens([
-            Identifier('ifprint'),
-        ])
+        self.then_return_tokens([Identifier.IDENTIFIER])
+        self.then_return_values(['ifprint'])
 
     def test_operator_with_invalid_whitespace(self):
         self.given_input('& &')

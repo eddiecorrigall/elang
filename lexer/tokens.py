@@ -1,72 +1,33 @@
 from enum import Enum
 from typing import Any
 
-from lexer.errors import LexerNotImplemented
 
-
-class Token:
-    @property
-    def label(self):
-        return self.LABEL
-
-    def __eq__(self, other):
-        return self.label == other.label
-
-
-class TokenWithValue(Token):
-    @property
-    def value(self) -> str:
-        return self._value
-    
-    def __init__(self, value: str) -> None:
-        super().__init__()
-        self._value = value
-
-    def __eq__(self, other):
-        return (
-            super().__eq__(other)
-            and self.value == other.value)
-   
-    def __repr__(self) -> str:
-        return '<{class_name}: {value}>'.format(
-            class_name=self.__class__.__name__,
-            value=self.value)
-
-
-class IntegerLiteral(TokenWithValue):
-    LABEL = 'Integer'
-
-
-class CharacterLiteral(TokenWithValue):
-    LABEL = 'Integer'
-
-
-class Identifier(TokenWithValue):
-    LABEL = 'Identifier'
-
-
-class StaticToken(Token, Enum):
+class Token(Enum):
     def __new__(cls, label: str, sequence: str) -> Any:
+        value = len(cls.__members__) + 1
         obj = object.__new__(cls)
-        obj._value_ = dict(
-            label=label,
-            sequence=sequence,
-        )
+        obj._value_ = value
+        obj.label = label
+        obj.sequence = sequence
         return obj
     
-    @property
-    def label(self) -> str:
-        return self.value['label']
-    
-    @property
-    def sequence(self) -> str:
-        return self.value['sequence']
-    
-    def __repr__(self) -> str:
-        return '<{name}>'.format(name=self.name)
+    def __repr__(self):
+        if self.sequence is None:
+            return '<{}>'.format(self.label)
+        else:
+            return '<{}: [{}]>'.format(self.label, self.sequence)
 
 
-class Operator(StaticToken):
+class Literal(Token):
+    INT = ('Integer', None)
+    CHAR = ('Integer', None)
+
+
+class Identifier(Token):
+    IDENTIFIER = ('Identifier', None)
+
+
+class Operator(Token):
     MULTIPLY = ('Op_multiply', '*')
     DIVIDE = ('Op_divide', '/')
     MOD = ('Op_mod', '%')
@@ -85,7 +46,7 @@ class Operator(StaticToken):
     OR = ('Op_or', '¦¦')
 
 
-class Symbol(StaticToken):
+class Symbol(Token):
     LEFT_PARENTHESIS = ('LeftParen', '(')
     RIGHT_PARENTHESIS = ('RightParen', ')')
     LEFT_BRACE = ('LeftBrace', '{')
@@ -94,7 +55,7 @@ class Symbol(StaticToken):
     COMMA = ('Comma', ',')
 
 
-class Keyword(StaticToken):
+class Keyword(Token):
     IF = ('Keyword_if', 'if')
     ELSE = ('Keyword_else', 'else')
     WHILE = ('Keyword_while', 'while')
@@ -103,11 +64,11 @@ class Keyword(StaticToken):
     PRINT_CHARACTER = ('Keyword_putc', 'putc')
 
 
-class ZeroWidth(StaticToken):
+class ZeroWidth(Token):
     TERMINAL = ('End_of_input', None)
 
 
-class Whitespace(StaticToken):
+class Whitespace(Token):
     NEWLINE = ('Whitespace_newline', '\n')
     SPACE = ('Whitespace_space', ' ')
     TAB = ('Whitespace_tab', '\t')

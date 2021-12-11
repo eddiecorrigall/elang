@@ -1,62 +1,47 @@
-from lexer import Token, IntegerLiteral, Operator, Symbol, Keyword, Whitespace
-from lexer.tokens import Identifier, TokenWithValue
-from tests import LexerTestBase
+import unittest
+
+from lexer.tokens import Literal, Operator, Symbol, Keyword, Whitespace
+from tests.lexer_test_base import LexerTestBase
 
 
-class TestToken(Token):
-    LABEL = 'TEST_TOKEN'
+class TestTokenEquality(unittest.TestCase):
+    def test_identity_equality(self):
+        self.assertIs(Literal.CHAR, Literal.CHAR)
+        self.assertEqual(Literal.CHAR, Literal.CHAR)
 
-
-class OtherTestToken(Token):
-    LABEL = 'OTHER_TEST_TOKEN'
-    
-
-class TestTokenWithValue(TokenWithValue):
-    LABEL = 'TEST_TOKEN_WITH_VALUE'
-
-
-class OtherTestTokenWithValue(TokenWithValue):
-    LABEL = 'OTHER_TEST_TOKEN_WITH_VALUE'
-
-
-class TestTokens(LexerTestBase):
-    
-    def test_token_equality(self):
-        self.assertIsNot(TestToken(), TestToken())
-        self.assertIsNot(TestToken(), OtherTestToken())
-        self.assertEqual(TestToken(), TestToken())
-        self.assertNotEqual(TestToken(), OtherTestToken())
-
-    def test_token_equality(self):
-        value = '123'
-        otherValue = 'abc'
-
-        self.assertIsNot(TestTokenWithValue(value), TestTokenWithValue(value))
-        self.assertIsNot(TestTokenWithValue(value), OtherTestTokenWithValue(value))
-
-        self.assertIsNot(TestTokenWithValue(value), TestTokenWithValue(otherValue))
-        self.assertIsNot(TestTokenWithValue(value), OtherTestTokenWithValue(otherValue))
-
-        self.assertEqual(TestTokenWithValue(value), TestTokenWithValue(value))
-        self.assertNotEqual(TestTokenWithValue(value), OtherTestTokenWithValue(value))
-
-        self.assertNotEqual(TestTokenWithValue(value), TestTokenWithValue(otherValue))
-        self.assertNotEqual(TestTokenWithValue(value), OtherTestTokenWithValue(otherValue))
-
-    def test_integer_literal_equality(self):
-        value = '123'
-        self.assertIsNot(IntegerLiteral(value), IntegerLiteral(value))
-        self.assertEqual(IntegerLiteral(value), IntegerLiteral(value))
-    
-    def test_identifier_equality(self):
-        value = 'print'
-        self.assertIsNot(Identifier(value), Identifier(value))
-        self.assertEqual(Identifier(value), Identifier(value))
+        self.assertIsNot(Literal.CHAR, Literal.INT)
+        self.assertNotEqual(Literal.CHAR, Literal.INT)
 
     def test_operator_equality(self):
         self.assertIs(Operator.ADD, Operator.ADD)
         self.assertEqual(Operator.ADD, Operator.ADD)
 
+        self.assertIsNot(Operator.ADD, Operator.SUBTRACT)
+        self.assertNotEqual(Operator.ADD, Operator.SUBTRACT)
+
+    def test_symbol_equality(self):
+        self.assertIs(Symbol.LEFT_PARENTHESIS, Symbol.LEFT_PARENTHESIS)
+        self.assertEqual(Symbol.LEFT_PARENTHESIS, Symbol.LEFT_PARENTHESIS)
+
+        self.assertIsNot(Symbol.LEFT_PARENTHESIS, Symbol.RIGHT_PARENTHESIS)
+        self.assertNotEqual(Symbol.LEFT_PARENTHESIS, Symbol.RIGHT_PARENTHESIS)
+
+    def test_keyword_equality(self):
+        self.assertIs(Keyword.IF, Keyword.IF)
+        self.assertEqual(Keyword.IF, Keyword.IF)
+
+        self.assertIsNot(Keyword.IF, Keyword.ELSE)
+        self.assertNotEqual(Keyword.IF, Keyword.ELSE)
+
+    def test_keyword_equality(self):
+        self.assertIs(Whitespace.NEWLINE, Whitespace.NEWLINE)
+        self.assertEqual(Whitespace.NEWLINE, Whitespace.NEWLINE)
+
+        self.assertIsNot(Whitespace.NEWLINE, Whitespace.TAB)
+        self.assertNotEqual(Whitespace.NEWLINE, Whitespace.TAB)
+
+
+class TestTokens(LexerTestBase):
     def test_operators(self):
         for operator in Operator:
             if operator == Operator.NEGATE:
@@ -72,10 +57,6 @@ class TestTokens(LexerTestBase):
         self.when_lex()
         self.then_return_token(Operator.SUBTRACT)
 
-    def test_symbol_equality(self):
-        self.assertIs(Symbol.LEFT_PARENTHESIS, Symbol.LEFT_PARENTHESIS)
-        self.assertEqual(Symbol.LEFT_PARENTHESIS, Symbol.LEFT_PARENTHESIS)
-
     def test_symbols(self):
         for symbol in Symbol:
             with self.subTest('test symbol {}'.format(symbol.name)):
@@ -83,20 +64,12 @@ class TestTokens(LexerTestBase):
                 self.when_lex()
                 self.then_return_token(symbol)
 
-    def test_keyword_equality(self):
-        self.assertIs(Keyword.IF, Keyword.IF)
-        self.assertEqual(Keyword.IF, Keyword.IF)
-
     def test_keywords(self):
         for keyword in Keyword:
             with self.subTest('test keyword {}'.format(keyword.name)):
                 self.given_input(keyword.sequence)
                 self.when_lex()
                 self.then_return_token(keyword)
-
-    def test_keyword_equality(self):
-        self.assertIs(Whitespace.NEWLINE, Whitespace.NEWLINE)
-        self.assertEqual(Whitespace.NEWLINE, Whitespace.NEWLINE)
 
     def test_whitespace(self):
         for whitespace in Whitespace:

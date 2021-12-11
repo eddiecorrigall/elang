@@ -1,5 +1,6 @@
-from lexer import LexerSyntaxError
-from tests import LexerTestBase
+from lexer.errors import LexerSyntaxError
+from lexer.tokens import Literal
+from tests.lexer_test_base import LexerTestBase
 
 
 class TestCharLiteral(LexerTestBase):
@@ -11,7 +12,7 @@ class TestCharLiteral(LexerTestBase):
     def test_single_character(self):
         self.given_input("'A'")
         self.when_lex()
-        self.then_return_character_literal('65')
+        self.then_return_literal(Literal.CHAR, '65')
     
     def test_two_characters(self):
         self.given_input("'Ab'")
@@ -31,7 +32,7 @@ class TestCharLiteral(LexerTestBase):
     def test_escaped_newline(self):
         self.given_input("'\\n'")
         self.when_lex()
-        self.then_return_character_literal('10')
+        self.then_return_literal(Literal.CHAR, '10')
     
     def test_backslash(self):
         self.given_input("'\\'")
@@ -41,7 +42,7 @@ class TestCharLiteral(LexerTestBase):
     def test_escaped_backslash(self):
         self.given_input("'\\\\'")
         self.when_lex()
-        self.then_return_character_literal('92')
+        self.then_return_literal(Literal.CHAR, '92')
 
     def test_single_quote(self):
         self.given_input("'''")
@@ -49,11 +50,11 @@ class TestCharLiteral(LexerTestBase):
             self.when_lex()
 
     def test_escaped_single_quote(self):
-        self.given_input("'\''")
+        self.given_input("'\\''")
         with self.assertRaises(LexerSyntaxError):
             self.when_lex()
 
     def test_unknown_escape_character(self):
-        self.given_input("'\r'")
+        self.given_input("'\\r'")
         with self.assertRaises(LexerSyntaxError):
             self.when_lex()
