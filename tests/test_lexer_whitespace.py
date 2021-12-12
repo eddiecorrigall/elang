@@ -1,5 +1,5 @@
 from lexer.errors import LexerSyntaxError
-from lexer.tokens import Identifier, Keyword, Operator
+from lexer.tokens import Identifier, Keyword, Operator, Symbol
 from tests.lexer_test_base import LexerTestBase
 
 
@@ -27,3 +27,8 @@ class TestWhitespace(LexerTestBase):
         self.given_input(' &&')
         self.when_lex()
         self.then_return_token(Operator.AND)
+
+    def test_symbol_with_valid_whitespace(self):
+        self.given_input('\t(')
+        self.when_lex()
+        self.then_return_token(Symbol.LEFT_PARENTHESIS)
