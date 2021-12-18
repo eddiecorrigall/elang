@@ -63,9 +63,6 @@ class Keyword(Token):
     WHILE = ('Keyword_while', r'while', 'while')
     PRINT_CHARACTER = ('Keyword_putc', r'putc', 'putc')
     PRINT_STRING = ('Keyword_print', r'print', 'print')
-    
-    def __str__(self):
-        return self.sequence
 
 
 class Whitespace(Token):

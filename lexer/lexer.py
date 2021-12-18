@@ -45,7 +45,7 @@ class Lexer:
         for mo in re.finditer(self.regex, line):
             token_label = mo.lastgroup
             token_value = mo.group()
-            character_offset = mo.start() - character_offset
+            character_offset = mo.start()
             if token_label.startswith('Whitespace') or token_label.startswith('Comment'):
                 continue
             elif token_label == Literal.CHAR.label:
@@ -53,13 +53,8 @@ class Lexer:
                     token_value = '10'
                 elif token_value == "'\\\\'":
                     token_value = '92'
-                elif len(token_value) == 3:
-                    if token_value in ["'\n'", "'\\'"]:
-                        raise LexerSyntaxError(
-                            'invalid character literal on line {} at character {} - <<<{}>>>'.format(
-                                line_number, character_offset, line))
-                    else:
-                        token_value = str(ord(token_value[1]))
+                elif len(token_value) == 3 and token_value not in ["'\n'", "'\\'"]:
+                    token_value = str(ord(token_value[1]))
                 else:
                     raise LexerSyntaxError(
                         'invalid character literal on line {} at character {} - <<<{}>>>'.format(
