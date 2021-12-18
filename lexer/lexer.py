@@ -1,67 +1,78 @@
+import re
 
-from collections import namedtuple
-from typing import List
-from lexer.errors import LexerNotImplemented, LexerSyntaxError
-from lexer.tokens import Identifier, Keyword, Literal, Operator, Symbol, Whitespace, ZeroWidth
-from trie import find, insert
-from trie.node import Node
+from typing import List, NamedTuple
+from lexer.errors import LexerSyntaxError
+from lexer.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Token, Whitespace
 
 
-LexerOutput = namedtuple('LexerOutput', ['line', 'offset', 'token', 'value'])
+class LexerOutput(NamedTuple):
+    line: int
+    offset: int
+    label: str
+    value: str
 
 
 class Lexer:
+    def getRegexPair(self, token: Token) -> str:
+        return '(?P<{label}>{pattern})'.format(
+            label=token.label,
+            pattern=token.pattern)
+
     def __init__(self):
-        self.root = Node()
-        for operator in Operator:
-            if operator == Operator.NEGATE:
-                # Do not insert NEGATE
-                # Turning some SUBTRACT into NEGATE is handled by syntax analyzer
-                continue
-            insert(self.root, operator.sequence, operator)
-        for symbol in Symbol:
-            insert(self.root, symbol.sequence, symbol)
-        for keyword in Keyword:
-            insert(self.root, keyword.sequence, keyword)
-        for whitespace in Whitespace:
-            insert(self.root, whitespace.sequence, whitespace)
-        # Integer Literals
-        for integer in range(0, 10):
-            integer_str = str(integer)
-            integer_node = insert(self.root, integer_str, Literal.INT)
-            for next_integer in range(0, 10):
-                integer_node.set_next(str(next_integer), integer_node)
-        # Character Literals
-        insert(self.root, "'\\n'", Literal.CHAR)
-        insert(self.root, "'\\\\'", Literal.CHAR)
+        # Note: order matters for enum class and enum
+        tokens: List[Token] = []
+        tokens.extend(Comment)
+        tokens.extend(Whitespace)
+        tokens.extend(Operator)
+        tokens.extend(Symbol)
+        tokens.extend(Identifier)
+        tokens.extend(Keyword)
+        tokens.extend(Literal)
+        tokens.extend(Mismatch)
+
+        # Remove NEGATE
+        # Turning some SUBTRACT into NEGATE is handled by syntax analyzer
+        tokens.remove(Operator.NEGATE)
+
+        self.tokens = tokens
+        self.regex = '|'.join([self.getRegexPair(token) for token in tokens])
 
     def __call__(self, line: str, line_number: int = 1) -> List[LexerOutput]:
         character_offset = 0
-        while line:
-            node, sequence = find(self.root, line)
-            # Jump passed the consumed sequence
-            sequence_length = len(sequence)
-            line = line[sequence_length:]
-            if node is None:
-                raise LexerSyntaxError('syntax error in "{}"'.format(line))
-            token = node.value
-            if isinstance(token, Whitespace):
-                pass
-            elif token == Literal.CHAR:
-                value_char = sequence[1:-1]  # Remove single quotes
-                if value_char == '\\n':
-                    yield LexerOutput(line_number, character_offset, token, '10')
-                elif value_char == '\\\\':
-                    yield LexerOutput(line_number, character_offset, token, '92')
+        for mo in re.finditer(self.regex, line):
+            token_label = mo.lastgroup
+            token_value = mo.group()
+            character_offset = mo.start() - character_offset
+            if token_label == Literal.CHAR.label:
+                if token_value == "'\\n'":
+                    token_value = '10'
+                elif token_value == "'\\\\'":
+                    token_value = '92'
+                elif len(token_value) == 3:
+                    if token_value in ["'\n'", "'\\'"]:
+                        raise LexerSyntaxError(
+                            'invalid character literal on line {} at character {} - <<<{}>>>'.format(
+                                line_number, character_offset, line))
+                    token_value = str(ord(token_value[1]))
                 else:
-                    if len(value_char) != 1:
-                        raise LexerSyntaxError('invalid char {}'.format(sequence))
-                    value_int = ord(value_char)
-                    yield LexerOutput(line_number, 0, token, str(value_int))
-            elif isinstance(token, (Literal, Identifier)):
-                yield LexerOutput(line_number, character_offset, token, sequence)
-            elif isinstance(token, (Operator, Symbol, Keyword, ZeroWidth)):
-               yield LexerOutput(line_number, character_offset, token, None)
-            else:
-                raise LexerNotImplemented('sequence: {}, token: {}'.format(sequence, token))
-            character_offset += sequence_length
+                    raise LexerSyntaxError(
+                        'invalid character literal on line {} at character {} - <<<{}>>>'.format(
+                            line_number, character_offset, line))
+            elif token_label == Identifier.IDENTIFIER.label:
+                keyword_matches = [
+                    keyword
+                    for keyword in Keyword
+                    if keyword.sequence == token_value]
+                if keyword_matches:
+                    # Identifier matches an existing keyword
+                    token_label = keyword_matches[0].label
+                    token_value = None
+            elif token_label.startswith('Keyword') or token_label.startswith('Op'):
+                token_value = None
+            elif token_label.startswith('Whitespace') or token_label.startswith('Comment'):
+                continue
+            elif token_label.startswith('Mismatch'):
+                raise LexerSyntaxError(
+                    'syntax error on line {} at character {} - <<<{}>>>'.format(
+                        line_number, character_offset, line))
+            yield LexerOutput(line_number, character_offset, token_label, token_value)

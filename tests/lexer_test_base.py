@@ -29,14 +29,14 @@ class LexerTestBase(unittest.TestCase):
     def then_return_literal(self, expected_literal: Literal, expected_value: str):
         self.then_return_iterable()
         self.assertEqual(1, len(self.output))
-        self.assertEqual(expected_literal, self.output[0].token)
+        self.assertEqual(expected_literal.label, self.output[0].label)
         self.assertEqual(expected_value, self.output[0].value)
 
     def then_return_tokens(self, expected_tokens: List[Token]):
         self.then_return_iterable()
         self.assertEqual(
-            expected_tokens,
-            [lexer_output.token for lexer_output in self.output])
+            [expected_token.label for expected_token in expected_tokens],
+            [lexer_output.label for lexer_output in self.output])
 
     def then_return_values(self, expected_values: List[str]):
         self.then_return_iterable()

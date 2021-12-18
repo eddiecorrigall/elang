@@ -13,8 +13,8 @@ class TestIntegerLiteral(LexerTestBase):
         for input in ['00', '01']:
             with self.subTest('test zero prefix {}'.format(input)):
                 self.given_input(input)
-                with self.assertRaises(LexerSyntaxError):
-                    self.when_lex()
+                self.when_lex()
+                self.then_return_literal(Literal.INT, input)
     
     def test_negate_zero(self):
         # Not handled by lexer
