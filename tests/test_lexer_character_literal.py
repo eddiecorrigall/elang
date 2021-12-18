@@ -33,7 +33,17 @@ class TestCharLiteral(LexerTestBase):
         self.given_input("'\\n'")
         self.when_lex()
         self.then_return_literal(Literal.CHAR, '10')
+
+    def test_single_quote(self):
+        self.given_input("'''")
+        with self.assertRaises(LexerSyntaxError):
+            self.when_lex()
     
+    def test_escaped_single_quote(self):
+        self.given_input("'\\''")
+        with self.assertRaises(LexerSyntaxError):
+            self.when_lex()
+
     def test_backslash(self):
         self.given_input("'\\'")
         with self.assertRaises(LexerSyntaxError):
@@ -43,11 +53,6 @@ class TestCharLiteral(LexerTestBase):
         self.given_input("'\\\\'")
         self.when_lex()
         self.then_return_literal(Literal.CHAR, '92')
-
-    def test_single_quote(self):
-        self.given_input("'''")
-        with self.assertRaises(LexerSyntaxError):
-            self.when_lex()
 
     def test_escaped_single_quote(self):
         self.given_input("'\\''")

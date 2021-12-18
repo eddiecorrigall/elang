@@ -11,7 +11,7 @@ class Token(Enum):
         obj.pattern = pattern
         obj.sequence = sequence
         return obj
-    
+
     def __repr__(self):
         if self.pattern is None:
             return '<{}>'.format(self.label)
@@ -30,31 +30,31 @@ class Identifier(Token):
 
 
 class Operator(Token):
-    MULTIPLY = ('Op_multiply', r'\*', '*')
-    DIVIDE = ('Op_divide', r'/', '/')
-    MOD = ('Op_mod', r'%', '%')
-    ADD = ('Op_add', r'\+', '+')
-    SUBTRACT = ('Op_subtract', r'\-', '-')
-    NEGATE = ('Op_negate', r'\-', '-')
-    LESS_OR_EQUAL = ('Op_lessequal', r'<=', '<=')
-    LESS = ('Op_less', r'<', '<')
-    GREATER_OR_EQUAL = ('Op_greaterequal', r'>=', '>=')
-    GREATER = ('Op_greater', r'>', '>')
-    EQUAL = ('Op_equal', r'==', '==')
-    NOT_EQUAL = ('Op_notequal', r'!=', '!=')
-    NOT = ('Op_not', r'!', '!')
-    ASSIGN = ('Op_assign', r'=', '=')
-    AND = ('Op_and', r'&&', '&&')
-    OR = ('Op_or', r'\|\|', '||')
+    MULTIPLY = ('Operator_multiply', r'\*', '*')
+    DIVIDE = ('Operator_divide', r'/', '/')
+    MOD = ('Operator_mod', r'%', '%')
+    ADD = ('Operator_add', r'\+', '+')
+    SUBTRACT = ('Operator_subtract', r'\-', '-')
+    NEGATE = ('Operator_negate', r'\-', '-')
+    LESS_OR_EQUAL = ('Operator_lessequal', r'<=', '<=')
+    LESS = ('Operator_less', r'<', '<')
+    GREATER_OR_EQUAL = ('Operator_greaterequal', r'>=', '>=')
+    GREATER = ('Operator_greater', r'>', '>')
+    EQUAL = ('Operator_equal', r'==', '==')
+    NOT_EQUAL = ('Operator_notequal', r'!=', '!=')
+    NOT = ('Operator_not', r'!', '!')
+    ASSIGN = ('Operator_assign', r'=', '=')
+    AND = ('Operator_and', r'&&', '&&')
+    OR = ('Operator_or', r'\|\|', '||')
 
 
 class Symbol(Token):
-    LEFT_PARENTHESIS = ('LeftParen', r'\(', '(')
-    RIGHT_PARENTHESIS = ('RightParen', r'\)', ')')
-    LEFT_BRACE = ('LeftBrace', r'{', '{')
-    RIGHT_BRACE = ('RightBrace', r'}', '}')
-    SEMICOLON = ('Semicolon', r';', ';')
-    COMMA = ('Comma', r',', ',')
+    LEFT_PARENTHESIS = ('Symbol_LeftParen', r'\(', '(')
+    RIGHT_PARENTHESIS = ('Symbol_RightParen', r'\)', ')')
+    LEFT_BRACE = ('Symbol_LeftBrace', r'{', '{')
+    RIGHT_BRACE = ('Symbol_RightBrace', r'}', '}')
+    SEMICOLON = ('Symbol_Semicolon', r';', ';')
+    COMMA = ('Symbol_Comma', r',', ',')
 
 
 class Keyword(Token):

@@ -1,6 +1,6 @@
 import re
 
-from typing import List, NamedTuple
+from typing import Iterator, List, NamedTuple
 from lexer.errors import LexerSyntaxError
 from lexer.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Token, Whitespace
 
@@ -40,7 +40,7 @@ class Lexer:
             (keyword.sequence, keyword)
             for keyword in Keyword])
 
-    def __call__(self, line: str, line_number: int = 1) -> List[LexerOutput]:
+    def parse_line(self, line: str, line_number: int) -> Iterator[LexerOutput]:
         character_offset = 0
         for mo in re.finditer(self.regex, line):
             token_label = mo.lastgroup
@@ -64,10 +64,17 @@ class Lexer:
                     # Identifier matches an existing keyword
                     token_label = self.keyword_lookup[token_value].label
                     token_value = None
-            elif token_label.startswith('Op'):
+            elif token_label.startswith('Operator') or token_label.startswith('Symbol'):
                 token_value = None
             elif token_label.startswith('Mismatch'):
                 raise LexerSyntaxError(
                     'syntax error on line {} at character {} - <<<{}>>>'.format(
                         line_number, character_offset, line))
             yield LexerOutput(line_number, character_offset, token_label, token_value)
+
+    def __call__(self, program: str) -> Iterator[Token]:
+        line_number = 1
+        for line in program.split('\n'):
+            for token in self.parse_line(line=line, line_number=line_number):
+                yield token
+            line_number += 1
