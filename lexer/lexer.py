@@ -26,7 +26,6 @@ class Lexer:
         tokens.extend(Operator)
         tokens.extend(Symbol)
         tokens.extend(Identifier)
-        tokens.extend(Keyword)
         tokens.extend(Literal)
         tokens.extend(Mismatch)
 
@@ -36,6 +35,10 @@ class Lexer:
 
         self.tokens = tokens
         self.regex = '|'.join([self.getRegexPair(token) for token in tokens])
+        
+        self.keyword_lookup = dict([
+            (keyword.sequence, keyword)
+            for keyword in Keyword])
 
     def __call__(self, line: str, line_number: int = 1) -> List[LexerOutput]:
         character_offset = 0
@@ -43,7 +46,9 @@ class Lexer:
             token_label = mo.lastgroup
             token_value = mo.group()
             character_offset = mo.start() - character_offset
-            if token_label == Literal.CHAR.label:
+            if token_label.startswith('Whitespace') or token_label.startswith('Comment'):
+                continue
+            elif token_label == Literal.CHAR.label:
                 if token_value == "'\\n'":
                     token_value = '10'
                 elif token_value == "'\\\\'":
@@ -53,24 +58,19 @@ class Lexer:
                         raise LexerSyntaxError(
                             'invalid character literal on line {} at character {} - <<<{}>>>'.format(
                                 line_number, character_offset, line))
-                    token_value = str(ord(token_value[1]))
+                    else:
+                        token_value = str(ord(token_value[1]))
                 else:
                     raise LexerSyntaxError(
                         'invalid character literal on line {} at character {} - <<<{}>>>'.format(
                             line_number, character_offset, line))
             elif token_label == Identifier.IDENTIFIER.label:
-                keyword_matches = [
-                    keyword
-                    for keyword in Keyword
-                    if keyword.sequence == token_value]
-                if keyword_matches:
+                if token_value in self.keyword_lookup:
                     # Identifier matches an existing keyword
-                    token_label = keyword_matches[0].label
+                    token_label = self.keyword_lookup[token_value].label
                     token_value = None
-            elif token_label.startswith('Keyword') or token_label.startswith('Op'):
+            elif token_label.startswith('Op'):
                 token_value = None
-            elif token_label.startswith('Whitespace') or token_label.startswith('Comment'):
-                continue
             elif token_label.startswith('Mismatch'):
                 raise LexerSyntaxError(
                     'syntax error on line {} at character {} - <<<{}>>>'.format(
