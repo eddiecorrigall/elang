@@ -14,4 +14,5 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
 ```
 
 ## References
+- https://rosettacode.org/wiki/Compiler/lexical_analyzer
 - https://docs.python.org/3/library/re.html#writing-a-tokenizer
