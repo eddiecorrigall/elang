@@ -49,12 +49,12 @@ class Operator(Token):
 
 
 class Symbol(Token):
-    LEFT_PARENTHESIS = ('Symbol_LeftParen', r'\(', '(')
-    RIGHT_PARENTHESIS = ('Symbol_RightParen', r'\)', ')')
-    LEFT_BRACE = ('Symbol_LeftBrace', r'{', '{')
-    RIGHT_BRACE = ('Symbol_RightBrace', r'}', '}')
-    SEMICOLON = ('Symbol_Semicolon', r';', ';')
-    COMMA = ('Symbol_Comma', r',', ',')
+    OPEN_PARENTHESIS = ('Symbol_openparenthesis', r'\(', '(')
+    CLOSE_PARENTHESIS = ('Symbol_closeparenthesis', r'\)', ')')
+    OPEN_BRACE = ('Symbol_openbrace', r'{', '{')
+    CLOSE_BRACE = ('Symbol_closebrace', r'}', '}')
+    SEMICOLON = ('Symbol_semicolon', r';', ';')
+    COMMA = ('Symbol_comma', r',', ',')
 
 
 class Keyword(Token):
@@ -80,4 +80,4 @@ class Mismatch(Token):
 
 
 class Terminal(Token):
-    TERMINAL = ('End_of_input', None)
+    TERMINAL = ('Terminal', None)

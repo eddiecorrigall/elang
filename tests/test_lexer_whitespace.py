@@ -31,4 +31,4 @@ class TestWhitespace(LexerTestBase):
     def test_symbol_with_valid_whitespace(self):
         self.givenProgramLine('\t(')
         self.whenLexParseLine()
-        self.thenReturnTokens([Symbol.LEFT_PARENTHESIS])
+        self.thenReturnTokens([Symbol.OPEN_PARENTHESIS])

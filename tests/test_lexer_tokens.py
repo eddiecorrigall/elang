@@ -20,11 +20,11 @@ class TestTokenEquality(unittest.TestCase):
         self.assertNotEqual(Operator.ADD, Operator.SUBTRACT)
 
     def test_symbol_equality(self):
-        self.assertIs(Symbol.LEFT_PARENTHESIS, Symbol.LEFT_PARENTHESIS)
-        self.assertEqual(Symbol.LEFT_PARENTHESIS, Symbol.LEFT_PARENTHESIS)
+        self.assertIs(Symbol.OPEN_PARENTHESIS, Symbol.OPEN_PARENTHESIS)
+        self.assertEqual(Symbol.OPEN_PARENTHESIS, Symbol.OPEN_PARENTHESIS)
 
-        self.assertIsNot(Symbol.LEFT_PARENTHESIS, Symbol.RIGHT_PARENTHESIS)
-        self.assertNotEqual(Symbol.LEFT_PARENTHESIS, Symbol.RIGHT_PARENTHESIS)
+        self.assertIsNot(Symbol.OPEN_PARENTHESIS, Symbol.CLOSE_PARENTHESIS)
+        self.assertNotEqual(Symbol.OPEN_PARENTHESIS, Symbol.CLOSE_PARENTHESIS)
 
     def test_keyword_equality(self):
         self.assertIs(Keyword.IF, Keyword.IF)

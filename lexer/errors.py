@@ -4,7 +4,3 @@ class LexerError(Exception):
 
 class LexerSyntaxError(LexerError):
     pass
-
-
-class LexerNotImplemented(LexerError):
-    pass
