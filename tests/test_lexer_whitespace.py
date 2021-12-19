@@ -1,5 +1,5 @@
+from core.tokens import Identifier, Keyword, Operator, Symbol
 from lexer.errors import LexerSyntaxError
-from lexer.tokens import Identifier, Keyword, Operator, Symbol
 from tests.lexer_test_base import LexerTestBase
 
 

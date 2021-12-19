@@ -1,8 +1,8 @@
 import re
 
 from typing import Iterator, List, NamedTuple
+from core.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Token, Whitespace
 from lexer.errors import LexerSyntaxError
-from lexer.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Token, Whitespace
 
 
 class LexerOutput(NamedTuple):

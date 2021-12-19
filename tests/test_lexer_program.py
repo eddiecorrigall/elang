@@ -1,8 +1,5 @@
-from typing import Iterable, List
-
-from lexer import Lexer
-from lexer.lexer import LexerOutput
-from lexer.tokens import Identifier, Keyword, Literal, Operator, Symbol, Terminal, Token
+from core.tokens import Identifier, Keyword, Literal, Operator, Symbol, Terminal
+from lexer import Lexer, LexerOutput
 from tests.lexer_test_base import LexerTestBase
 
 

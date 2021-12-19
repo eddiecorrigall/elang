@@ -1,9 +1,9 @@
 from collections.abc import Iterable
-from typing import Iterator, List
+from typing import List
 import unittest
 
+from core.tokens import Token
 from lexer.lexer import Lexer, LexerOutput
-from lexer.tokens import Literal, Token
 
 
 # Use global - should not accumulate state

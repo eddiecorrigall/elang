@@ -1,5 +1,5 @@
+from core.tokens import Literal, Operator
 from lexer.errors import LexerSyntaxError
-from lexer.tokens import Literal, Operator
 from tests.lexer_test_base import LexerTestBase
 
 

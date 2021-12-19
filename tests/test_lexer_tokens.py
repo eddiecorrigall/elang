@@ -1,6 +1,6 @@
 import unittest
 
-from lexer.tokens import Literal, Operator, Symbol, Keyword, Whitespace
+from core.tokens import Literal, Operator, Symbol, Keyword, Whitespace
 from tests.lexer_test_base import LexerTestBase
 
 
