@@ -73,8 +73,11 @@ class Whitespace(Token):
 
 class Comment(Token):
     LINE = ('Comment_line', r'//(.*)')
-    MULTILINE = ('Comment_multiline', r'/\*(.*)\*/')
 
 
 class Mismatch(Token):
     MISMATCH = ('Mismatch',  r'.')
+
+
+class Terminal(Token):
+    TERMINAL = ('End_of_input', None)

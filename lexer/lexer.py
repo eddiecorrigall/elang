@@ -13,7 +13,7 @@ class LexerOutput(NamedTuple):
 
 
 class Lexer:
-    def getRegexPair(self, token: Token) -> str:
+    def get_regex_pair(self, token: Token) -> str:
         return '(?P<{label}>{pattern})'.format(
             label=token.label,
             pattern=token.pattern)
@@ -34,18 +34,18 @@ class Lexer:
         tokens.remove(Operator.NEGATE)
 
         self.tokens = tokens
-        self.regex = '|'.join([self.getRegexPair(token) for token in tokens])
+        self.regex = '|'.join([self.get_regex_pair(token) for token in tokens])
         
         self.keyword_lookup = dict([
             (keyword.sequence, keyword)
             for keyword in Keyword])
 
     def parse_line(self, line: str, line_number: int) -> Iterator[LexerOutput]:
-        character_offset = 0
+        character_offset = None
         for mo in re.finditer(self.regex, line):
             token_label = mo.lastgroup
             token_value = mo.group()
-            character_offset = mo.start()
+            character_offset = 1 + mo.start()
             if token_label.startswith('Whitespace') or token_label.startswith('Comment'):
                 continue
             elif token_label == Literal.CHAR.label:
@@ -78,3 +78,4 @@ class Lexer:
             for token in self.parse_line(line=line, line_number=line_number):
                 yield token
             line_number += 1
+        yield LexerOutput(line_number, 1, 'End_of_input', None)
