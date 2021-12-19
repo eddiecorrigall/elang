@@ -49,31 +49,31 @@ class TestTokens(LexerTestBase):
                 continue
             with self.subTest('test operator {}'.format(operator.name)):
                 self.givenProgramLine(operator.sequence)
-                self.when_lex()
+                self.whenLexParseLine()
                 self.then_return_token(operator)
     
     def test_operator_negate(self):
         self.givenProgramLine(Operator.NEGATE.sequence)
-        self.when_lex()
+        self.whenLexParseLine()
         self.then_return_token(Operator.SUBTRACT)
 
     def test_symbols(self):
         for symbol in Symbol:
             with self.subTest('test symbol {}'.format(symbol.name)):
                 self.givenProgramLine(symbol.sequence)
-                self.when_lex()
+                self.whenLexParseLine()
                 self.then_return_token(symbol)
 
     def test_keywords(self):
         for keyword in Keyword:
             with self.subTest('test keyword {}'.format(keyword.name)):
                 self.givenProgramLine(keyword.sequence)
-                self.when_lex()
+                self.whenLexParseLine()
                 self.then_return_token(keyword)
 
     def test_whitespace(self):
         for whitespace in Whitespace:
             with self.subTest('test whitespace {}'.format(whitespace.name)):
                 self.givenProgramLine(whitespace.sequence)
-                self.when_lex()
+                self.whenLexParseLine()
                 self.then_return_empty()

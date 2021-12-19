@@ -32,10 +32,6 @@ class LexerTestBase(unittest.TestCase):
     def thenReturnLexerOutput(self, output: List[LexerOutput]):
         self.assertEqual(self.output, output)
     
-    def when_lex(self):
-        # Deprecated
-        self.whenLexParseLine()
-    
     def then_return_iterable(self):
         # Deprecated
         self.assertTrue(isinstance(self.output, Iterable))
