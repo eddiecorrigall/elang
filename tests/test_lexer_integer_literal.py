@@ -20,8 +20,8 @@ class TestIntegerLiteral(LexerTestBase):
         # Not handled by lexer
         self.givenProgramLine('-0')
         self.whenLexParseLine()
-        self.then_return_tokens([Operator.SUBTRACT, Literal.INT])
-        self.then_return_values([None, '0'])
+        self.thenReturnTokens([Operator.SUBTRACT, Literal.INT])
+        self.thenReturnValues([None, '0'])
             
     def test_zero(self):
         self.givenProgramLine('0')
@@ -40,5 +40,5 @@ class TestIntegerLiteral(LexerTestBase):
             with self.subTest('test negative integer {}'.format(input)):
                 self.givenProgramLine(input)
                 self.whenLexParseLine()
-                self.then_return_tokens([Operator.SUBTRACT, Literal.INT])
-                self.then_return_values([None, expected])
+                self.thenReturnTokens([Operator.SUBTRACT, Literal.INT])
+                self.thenReturnValues([None, expected])

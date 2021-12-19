@@ -37,27 +37,23 @@ class LexerTestBase(unittest.TestCase):
         self.assertTrue(isinstance(self.output, Iterable))
     
     def thenReturnTokenWithValue(self, expected_token: Token, expected_value: str):
-        self.then_return_tokens([expected_token])
-        self.then_return_values([expected_value])
+        self.thenReturnTokens([expected_token])
+        self.thenReturnValues([expected_value])
 
-    def then_return_tokens(self, expected_tokens: List[Token]):
+    def thenReturnTokens(self, expected_tokens: List[Token]):
         # Deprecated
         self.thenReturnIterableLexerOutput()
         self.assertEqual(
             [expected_token.label for expected_token in expected_tokens],
             [lexer_output.label for lexer_output in self.output])
 
-    def then_return_values(self, expected_values: List[str]):
+    def thenReturnValues(self, expected_values: List[str]):
         # Deprecated
         self.thenReturnIterableLexerOutput()
         self.assertEqual(
             expected_values,
             [lexer_output.value for lexer_output in self.output])
 
-    def then_return_token(self, expected_token: Token):
-        # Deprecated
-        self.then_return_tokens([expected_token])
-    
     def thenReturnEmptyLexerOutput(self):
         # Deprecated
         self.thenReturnIterableLexerOutput()

@@ -7,7 +7,7 @@ class TestWhitespace(LexerTestBase):
     def test_keyword_with_whitespace(self):
         self.givenProgramLine('if print')
         self.whenLexParseLine()
-        self.then_return_tokens([
+        self.thenReturnTokens([
             Keyword.IF,
             Keyword.PRINT_STRING,
         ])
@@ -15,8 +15,7 @@ class TestWhitespace(LexerTestBase):
     def test_keyword_without_whitespace(self):
         self.givenProgramLine('ifprint')
         self.whenLexParseLine()
-        self.then_return_tokens([Identifier.IDENTIFIER])
-        self.then_return_values(['ifprint'])
+        self.thenReturnTokenWithValue(Identifier.IDENTIFIER, 'ifprint')
 
     def test_operator_with_invalid_whitespace(self):
         self.givenProgramLine('& &')
@@ -26,9 +25,9 @@ class TestWhitespace(LexerTestBase):
     def test_operator_with_valid_whitespace(self):
         self.givenProgramLine(' &&')
         self.whenLexParseLine()
-        self.then_return_token(Operator.AND)
+        self.thenReturnTokens([Operator.AND])
 
     def test_symbol_with_valid_whitespace(self):
         self.givenProgramLine('\t(')
         self.whenLexParseLine()
-        self.then_return_token(Symbol.LEFT_PARENTHESIS)
+        self.thenReturnTokens([Symbol.LEFT_PARENTHESIS])
