@@ -67,7 +67,7 @@ class LexerTestBase(unittest.TestCase):
         self.assertEqual(1, len(self.output))
         self.assertIsNone(self.output[0].value)
     
-    def then_return_empty(self):
+    def thenReturnEmptyLexerOutput(self):
         # Deprecated
         self.then_return_iterable()
         self.assertEqual(0, len(self.output))

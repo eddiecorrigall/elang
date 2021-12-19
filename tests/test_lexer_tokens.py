@@ -76,4 +76,4 @@ class TestTokens(LexerTestBase):
             with self.subTest('test whitespace {}'.format(whitespace.name)):
                 self.givenProgramLine(whitespace.sequence)
                 self.whenLexParseLine()
-                self.then_return_empty()
+                self.thenReturnEmptyLexerOutput()
