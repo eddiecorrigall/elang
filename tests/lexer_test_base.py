@@ -14,7 +14,7 @@ class LexerTestBase(unittest.TestCase):
     def givenProgramLines(self, program_lines: List[str]):
         self.program = '\n'.join(program_lines)
 
-    def givenProgram(self, program):
+    def givenProgramLine(self, program):
         self.program = program
 
     def whenLex(self):
@@ -31,10 +31,6 @@ class LexerTestBase(unittest.TestCase):
 
     def thenReturnLexerOutput(self, output: List[LexerOutput]):
         self.assertEqual(self.output, output)
-    
-    def given_input(self, input: str):
-        # Deprecated
-        self.program = input
     
     def when_lex(self):
         # Deprecated

@@ -48,32 +48,32 @@ class TestTokens(LexerTestBase):
                 # Lexer should output Operator.SUBTRACT instead
                 continue
             with self.subTest('test operator {}'.format(operator.name)):
-                self.given_input(operator.sequence)
+                self.givenProgramLine(operator.sequence)
                 self.when_lex()
                 self.then_return_token(operator)
     
     def test_operator_negate(self):
-        self.given_input(Operator.NEGATE.sequence)
+        self.givenProgramLine(Operator.NEGATE.sequence)
         self.when_lex()
         self.then_return_token(Operator.SUBTRACT)
 
     def test_symbols(self):
         for symbol in Symbol:
             with self.subTest('test symbol {}'.format(symbol.name)):
-                self.given_input(symbol.sequence)
+                self.givenProgramLine(symbol.sequence)
                 self.when_lex()
                 self.then_return_token(symbol)
 
     def test_keywords(self):
         for keyword in Keyword:
             with self.subTest('test keyword {}'.format(keyword.name)):
-                self.given_input(keyword.sequence)
+                self.givenProgramLine(keyword.sequence)
                 self.when_lex()
                 self.then_return_token(keyword)
 
     def test_whitespace(self):
         for whitespace in Whitespace:
             with self.subTest('test whitespace {}'.format(whitespace.name)):
-                self.given_input(whitespace.sequence)
+                self.givenProgramLine(whitespace.sequence)
                 self.when_lex()
                 self.then_return_empty()

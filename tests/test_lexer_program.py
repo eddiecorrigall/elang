@@ -49,7 +49,7 @@ class TestProgram(LexerTestBase):
         ])
 
     def test_without_whitespace(self):
-        self.givenProgram(r'if(p){print(n," ");count=count+1;}')
+        self.givenProgramLine(r'if(p){print(n," ");count=count+1;}')
         self.whenLex()
         self.thenReturnLexerOutput([
             LexerOutput(1, 1, Keyword.IF.label, None),
