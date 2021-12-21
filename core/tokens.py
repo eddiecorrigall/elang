@@ -20,7 +20,7 @@ class Token(Enum):
 
 
 class Literal(Token):
-    INT = ('Literal_integer', r'([0-9]+)')
+    INT = ('Literal_integer', r'([0-9]+)(?![a-zA-Z])')
     CHAR = ('Literal_character', r"'([^'\n]|\\n|\\\\)'")
     STR = ('Literal_string', r'"([^"\n]*)"')
 
