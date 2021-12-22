@@ -1,6 +1,6 @@
 import sys
 
-from lexer import Lexer
+from core.lexer import Lexer
 from core.parser import Parser
 
 '''

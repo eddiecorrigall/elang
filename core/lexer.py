@@ -1,5 +1,5 @@
 from core.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Terminal, Token, TokenType, Whitespace
-from lexer.errors import LexerSyntaxError
+from core.errors import LexerSyntaxError
 
 import re
 
