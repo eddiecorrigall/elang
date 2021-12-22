@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import unittest
 import click
 import sys
 
@@ -62,6 +63,35 @@ def parse(file, format):
             print(ast.as_json())
         else:
             raise click.ClickException('invalid output format')
+
+
+@cli.command()
+@click.argument('test_name', required=False)
+def test(test_name):
+    """
+    Run unit tests.
+
+    \b
+    Example - run all unit tests:
+    elang test
+
+    \b
+    Example - run specific test:
+    elang test tests.test_lexer_tokens.TestTokens.test_keywords
+
+    \b
+    Example - run specific test case/class:
+    elang test tests.test_lexer_tokens.TestTokens
+
+    \b
+    Example - run specific test module/file:
+    elang test tests.test_lexer_tokens
+    """
+    if test_name is None:
+        tests = unittest.TestLoader().discover('tests')
+    else:
+        tests = unittest.TestLoader().loadTestsFromName(test_name)
+    unittest.TextTestRunner(verbosity=2).run(tests)
 
 
 if __name__ == '__main__':
