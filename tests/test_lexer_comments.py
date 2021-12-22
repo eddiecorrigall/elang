@@ -5,7 +5,7 @@ class TestComments(LexerTestBase):
     def test_line_comment(self):
         self.givenProgramLine('//print("Hello world")')
         self.whenLexParseLine()
-        self.thenReturnEmptyLexerOutput()
+        self.thenReturnNothing()
 
     '''
     def test_multiline_comment(self):

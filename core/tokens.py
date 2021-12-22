@@ -1,5 +1,12 @@
 from enum import Enum
-from typing import Any
+from typing import Any, NamedTuple
+
+
+class Token(NamedTuple):
+    line: int
+    offset: int
+    label: str
+    value: str
 
 
 class TokenType(Enum):

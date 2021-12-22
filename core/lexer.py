@@ -1,15 +1,9 @@
-import re
-
-from typing import Iterator, List, NamedTuple
-from core.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Terminal, TokenType, Whitespace
+from core.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Terminal, Token, TokenType, Whitespace
 from lexer.errors import LexerSyntaxError
 
+import re
 
-class LexerOutput(NamedTuple):
-    line: int
-    offset: int
-    label: str
-    value: str
+from typing import Iterator, List
 
 
 class Lexer:
@@ -40,7 +34,7 @@ class Lexer:
             (keyword.sequence, keyword)
             for keyword in Keyword])
 
-    def parse_line(self, line: str, line_number: int) -> Iterator[LexerOutput]:
+    def parse_line(self, line: str, line_number: int) -> Iterator[Token]:
         character_offset = None
         for mo in re.finditer(self.regex, line):
             token_label = mo.lastgroup
@@ -70,12 +64,12 @@ class Lexer:
                 raise LexerSyntaxError(
                     'syntax error on line {} at character {} - <<<{}>>>'.format(
                         line_number, character_offset, line))
-            yield LexerOutput(line_number, character_offset, token_label, token_value)
+            yield Token(line_number, character_offset, token_label, token_value)
 
-    def __call__(self, program: str) -> Iterator[LexerOutput]:
+    def __call__(self, program: str) -> Iterator[Token]:
         line_number = 1
         for line in program.split('\n'):
             for token in self.parse_line(line=line, line_number=line_number):
                 yield token
             line_number += 1
-        yield LexerOutput(line_number, 1, Terminal.TERMINAL.label, None)
+        yield Token(line=line_number, offset=1, label=Terminal.TERMINAL.label, value=None)

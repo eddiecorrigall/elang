@@ -1,6 +1,5 @@
 from core.ast import Node, NodeType
-from core.tokens import Identifier, Literal, Operator, Symbol, Terminal, TokenType
-from core.lexer import LexerOutput
+from core.tokens import Identifier, Literal, Operator, Symbol, Terminal, Token, TokenType
 
 from typing import List, Optional
 
@@ -26,7 +25,7 @@ class Parser:
         self.tokens = None
         self.token = None
 
-    def __call__(self, tokens: List[LexerOutput]):
+    def __call__(self, tokens: List[Token]):
         self.tokens = (token for token in tokens)
         self.token = None
         return self.make_sequence()

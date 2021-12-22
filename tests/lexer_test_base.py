@@ -2,8 +2,8 @@ from collections.abc import Iterable
 from typing import List
 import unittest
 
-from core.tokens import TokenType
-from core.lexer import Lexer, LexerOutput
+from core.tokens import Token, TokenType
+from core.lexer import Lexer
 
 
 # Use global - should not accumulate state
@@ -29,24 +29,24 @@ class LexerTestBase(unittest.TestCase):
         # Convert generator to list
         self.output = list(self.output)
 
-    def thenReturnLexerOutput(self, output: List[LexerOutput]):
+    def thenReturnTokens(self, output: List[Token]):
         self.assertEqual(self.output, output)
     
-    def thenReturnIterableLexerOutput(self):
+    def thenReturnIterableTokens(self):
         self.assertTrue(isinstance(self.output, Iterable))
 
-    def thenReturnTokens(self, expected_tokens: List[TokenType]):
-        self.thenReturnIterableLexerOutput()
+    def thenReturnTokenTypes(self, expected_tokens: List[TokenType]):
+        self.thenReturnIterableTokens()
         self.assertEqual(
             [expected_token.label for expected_token in expected_tokens],
             [lexer_output.label for lexer_output in self.output])
 
     def thenReturnValues(self, expected_values: List[str]):
-        self.thenReturnIterableLexerOutput()
+        self.thenReturnIterableTokens()
         self.assertEqual(
             expected_values,
             [lexer_output.value for lexer_output in self.output])
     
-    def thenReturnEmptyLexerOutput(self):
-        self.thenReturnIterableLexerOutput()
+    def thenReturnNothing(self):
+        self.thenReturnIterableTokens()
         self.assertEqual(0, len(self.output))

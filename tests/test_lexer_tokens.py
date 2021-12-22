@@ -50,30 +50,30 @@ class TestTokens(LexerTestBase):
             with self.subTest('test operator {}'.format(operator.name)):
                 self.givenProgramLine(operator.sequence)
                 self.whenLexParseLine()
-                self.thenReturnTokens([operator])
+                self.thenReturnTokenTypes([operator])
     
     def test_operator_negate(self):
         self.givenProgramLine(Operator.NEGATE.sequence)
         self.whenLexParseLine()
-        self.thenReturnTokens([Operator.SUBTRACT])
+        self.thenReturnTokenTypes([Operator.SUBTRACT])
 
     def test_symbols(self):
         for symbol in Symbol:
             with self.subTest('test symbol {}'.format(symbol.name)):
                 self.givenProgramLine(symbol.sequence)
                 self.whenLexParseLine()
-                self.thenReturnTokens([symbol])
+                self.thenReturnTokenTypes([symbol])
 
     def test_keywords(self):
         for keyword in Keyword:
             with self.subTest('test keyword {}'.format(keyword.name)):
                 self.givenProgramLine(keyword.sequence)
                 self.whenLexParseLine()
-                self.thenReturnTokens([keyword])
+                self.thenReturnTokenTypes([keyword])
 
     def test_whitespace(self):
         for whitespace in Whitespace:
             with self.subTest('test whitespace {}'.format(whitespace.name)):
                 self.givenProgramLine(whitespace.sequence)
                 self.whenLexParseLine()
-                self.thenReturnEmptyLexerOutput()
+                self.thenReturnNothing()

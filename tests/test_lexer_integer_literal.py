@@ -14,20 +14,20 @@ class TestIntegerLiteral(LexerTestBase):
             with self.subTest('test zero prefix {}'.format(input)):
                 self.givenProgramLine(input)
                 self.whenLexParseLine()
-                self.thenReturnTokens([Literal.INT])
+                self.thenReturnTokenTypes([Literal.INT])
                 self.thenReturnValues([input])
     
     def test_negate_zero(self):
         # Not handled by lexer
         self.givenProgramLine('-0')
         self.whenLexParseLine()
-        self.thenReturnTokens([Operator.SUBTRACT, Literal.INT])
+        self.thenReturnTokenTypes([Operator.SUBTRACT, Literal.INT])
         self.thenReturnValues([None, '0'])
 
     def test_zero(self):
         self.givenProgramLine('0')
         self.whenLexParseLine()
-        self.thenReturnTokens([Literal.INT])
+        self.thenReturnTokenTypes([Literal.INT])
         self.thenReturnValues(['0'])
 
     def test_positive_integers(self):
@@ -35,7 +35,7 @@ class TestIntegerLiteral(LexerTestBase):
             with self.subTest('test positive integer {}'.format(input)):
                 self.givenProgramLine(input)
                 self.whenLexParseLine()
-                self.thenReturnTokens([Literal.INT])
+                self.thenReturnTokenTypes([Literal.INT])
                 self.thenReturnValues([expected])
 
     def test_negative_integers(self):
@@ -43,5 +43,5 @@ class TestIntegerLiteral(LexerTestBase):
             with self.subTest('test negative integer {}'.format(input)):
                 self.givenProgramLine(input)
                 self.whenLexParseLine()
-                self.thenReturnTokens([Operator.SUBTRACT, Literal.INT])
+                self.thenReturnTokenTypes([Operator.SUBTRACT, Literal.INT])
                 self.thenReturnValues([None, expected])
