@@ -1,4 +1,4 @@
-from lexer import LexerOutput
+from core.lexer import LexerOutput
 from core.parser import Parser
 
 import unittest

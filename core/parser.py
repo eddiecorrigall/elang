@@ -1,6 +1,6 @@
 from core.ast import Node, NodeType
 from core.tokens import Identifier, Literal, Operator, Symbol, Terminal, Token
-from lexer.lexer import LexerOutput
+from core.lexer import LexerOutput
 
 from typing import List, Optional
 

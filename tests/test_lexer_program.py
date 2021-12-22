@@ -1,5 +1,5 @@
 from core.tokens import Identifier, Keyword, Literal, Operator, Symbol, Terminal
-from lexer import Lexer, LexerOutput
+from core.lexer import Lexer, LexerOutput
 from tests.lexer_test_base import LexerTestBase
 
 

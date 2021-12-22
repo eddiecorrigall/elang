@@ -1,6 +1,6 @@
 from core.ast import NodeType
 from core.tokens import Identifier, Literal, Operator, Symbol, Terminal
-from lexer.lexer import LexerOutput
+from core.lexer import LexerOutput
 from tests.parser_test_base import ParserTestBase
 
 

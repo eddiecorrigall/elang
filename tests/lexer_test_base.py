@@ -3,7 +3,7 @@ from typing import List
 import unittest
 
 from core.tokens import Token
-from lexer.lexer import Lexer, LexerOutput
+from core.lexer import Lexer, LexerOutput
 
 
 # Use global - should not accumulate state
