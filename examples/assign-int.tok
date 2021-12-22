@@ -1,0 +1,5 @@
+1	1	Identifier	abc
+1	5	Operator_assign
+1	7	Literal_integer	1
+1	8	Symbol_semicolon
+3	1	Terminal

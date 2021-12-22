@@ -1,3 +1,25 @@
+## Use CLI
+
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virual environment
+source venv/bin/activate
+
+# Install depedencies
+pip3 install -r requirements.txt
+
+# Add parent working directory to PATH
+export PATH="$(pwd):$PATH"
+
+# List help contents for elang
+elang --help
+
+# Deactivate virtual environment
+deactivate
+```
+
 ## Run Tests
 
 ```bash
