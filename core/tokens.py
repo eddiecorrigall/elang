@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Any
 
 
-class Token(Enum):
+class TokenType(Enum):
     def __new__(cls, label: str, pattern: str, sequence: str=None) -> Any:
         value = len(cls.__members__) + 1
         obj = object.__new__(cls)
@@ -19,17 +19,17 @@ class Token(Enum):
             return '<{}: [{}]>'.format(self.label, self.pattern)
 
 
-class Literal(Token):
+class Literal(TokenType):
     INT = ('Literal_integer', r'([0-9]+)(?![a-zA-Z])')
     CHAR = ('Literal_character', r"'([^'\n]|\\n|\\\\)'")
     STR = ('Literal_string', r'"([^"\n]*)"')
 
 
-class Identifier(Token):
+class Identifier(TokenType):
     IDENTIFIER = ('Identifier', r'([_a-zA-Z][_a-zA-Z0-9]*)')
 
 
-class Operator(Token):
+class Operator(TokenType):
     MULTIPLY = ('Operator_multiply', r'\*', '*')
     DIVIDE = ('Operator_divide', r'/', '/')
     MOD = ('Operator_mod', r'%', '%')
@@ -48,7 +48,7 @@ class Operator(Token):
     OR = ('Operator_or', r'\|\|', '||')
 
 
-class Symbol(Token):
+class Symbol(TokenType):
     OPEN_PARENTHESIS = ('Symbol_openparenthesis', r'\(', '(')
     CLOSE_PARENTHESIS = ('Symbol_closeparenthesis', r'\)', ')')
     OPEN_BRACE = ('Symbol_openbrace', r'{', '{')
@@ -57,7 +57,7 @@ class Symbol(Token):
     COMMA = ('Symbol_comma', r',', ',')
 
 
-class Keyword(Token):
+class Keyword(TokenType):
     IF = ('Keyword_if', r'if', 'if')
     ELSE = ('Keyword_else', r'else', 'else')
     WHILE = ('Keyword_while', r'while', 'while')
@@ -65,19 +65,19 @@ class Keyword(Token):
     PRINT_STRING = ('Keyword_print', r'print', 'print')
 
 
-class Whitespace(Token):
+class Whitespace(TokenType):
     NEWLINE = ('Whitespace_newline', r'\n', '\n')
     SPACE = ('Whitespace_space', r' ', ' ')
     TAB = ('Whitespace_tab', r'\t', '\t')
 
 
-class Comment(Token):
+class Comment(TokenType):
     LINE = ('Comment_line', r'//(.*)')
 
 
-class Mismatch(Token):
+class Mismatch(TokenType):
     MISMATCH = ('Mismatch',  r'.')
 
 
-class Terminal(Token):
+class Terminal(TokenType):
     TERMINAL = ('Terminal', None)

@@ -1,5 +1,5 @@
 from core.ast import Node, NodeType
-from core.tokens import Identifier, Literal, Operator, Symbol, Terminal, Token
+from core.tokens import Identifier, Literal, Operator, Symbol, Terminal, TokenType
 from core.lexer import LexerOutput
 
 from typing import List, Optional
@@ -43,10 +43,10 @@ class Parser:
     def next_token(self) -> None:
         self.token = next(self.tokens)
 
-    def accept(self, token: Token):
+    def accept(self, token: TokenType):
         return self.token_label == token.label
 
-    def expect(self, token: Token) -> str:
+    def expect(self, token: TokenType) -> str:
         if self.accept(token):
             value = self.token_value
             self.next_token()

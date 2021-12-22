@@ -1,7 +1,7 @@
 import re
 
 from typing import Iterator, List, NamedTuple
-from core.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Terminal, Token, Whitespace
+from core.tokens import Comment, Identifier, Keyword, Literal, Mismatch, Operator, Symbol, Terminal, TokenType, Whitespace
 from lexer.errors import LexerSyntaxError
 
 
@@ -13,28 +13,28 @@ class LexerOutput(NamedTuple):
 
 
 class Lexer:
-    def get_regex_pair(self, token: Token) -> str:
+    def get_regex_pair(self, token_type: TokenType) -> str:
         return '(?P<{label}>{pattern})'.format(
-            label=token.label,
-            pattern=token.pattern)
+            label=token_type.label,
+            pattern=token_type.pattern)
 
     def __init__(self):
         # Note: order matters for enum class and enum
-        tokens: List[Token] = []
-        tokens.extend(Comment)
-        tokens.extend(Whitespace)
-        tokens.extend(Operator)
-        tokens.extend(Symbol)
-        tokens.extend(Identifier)
-        tokens.extend(Literal)
-        tokens.extend(Mismatch)
+        token_types: List[TokenType] = []
+        token_types.extend(Comment)
+        token_types.extend(Whitespace)
+        token_types.extend(Operator)
+        token_types.extend(Symbol)
+        token_types.extend(Identifier)
+        token_types.extend(Literal)
+        token_types.extend(Mismatch)
 
         # Remove NEGATE
         # Turning some SUBTRACT into NEGATE is handled by syntax analyzer
-        tokens.remove(Operator.NEGATE)
+        token_types.remove(Operator.NEGATE)
 
-        self.tokens = tokens
-        self.regex = '|'.join([self.get_regex_pair(token) for token in tokens])
+        self.tokens = token_types
+        self.regex = '|'.join([self.get_regex_pair(token) for token in token_types])
         
         self.keyword_lookup = dict([
             (keyword.sequence, keyword)
@@ -72,7 +72,7 @@ class Lexer:
                         line_number, character_offset, line))
             yield LexerOutput(line_number, character_offset, token_label, token_value)
 
-    def __call__(self, program: str) -> Iterator[Token]:
+    def __call__(self, program: str) -> Iterator[LexerOutput]:
         line_number = 1
         for line in program.split('\n'):
             for token in self.parse_line(line=line, line_number=line_number):

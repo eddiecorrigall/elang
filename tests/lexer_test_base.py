@@ -2,7 +2,7 @@ from collections.abc import Iterable
 from typing import List
 import unittest
 
-from core.tokens import Token
+from core.tokens import TokenType
 from core.lexer import Lexer, LexerOutput
 
 
@@ -35,7 +35,7 @@ class LexerTestBase(unittest.TestCase):
     def thenReturnIterableLexerOutput(self):
         self.assertTrue(isinstance(self.output, Iterable))
 
-    def thenReturnTokens(self, expected_tokens: List[Token]):
+    def thenReturnTokens(self, expected_tokens: List[TokenType]):
         self.thenReturnIterableLexerOutput()
         self.assertEqual(
             [expected_token.label for expected_token in expected_tokens],
