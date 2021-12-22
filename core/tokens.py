@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, NamedTuple
+from typing import Any, Iterable, NamedTuple
 
 
 class Token(NamedTuple):
@@ -88,3 +88,29 @@ class Mismatch(TokenType):
 
 class Terminal(TokenType):
     TERMINAL = ('Terminal', None)
+
+
+def tokens_to_lines(tokens: Iterable[Token]) -> Iterable[str]:
+    for token in tokens:
+        parts = [str(token.line), str(token.offset), token.label]
+        if token.value is not None:
+            parts.append(token.value)
+        yield '\t'.join(parts)
+
+
+def tokens_from_file(file) -> Iterable[Token]:
+    # TODO: read line by line
+    for line in file.read().split('\n'):
+        line_parts = line.split('\t')
+        value = None
+        if len(line_parts) == 3:
+            row, column, label = line_parts
+        elif len(line_parts) == 4:
+            row, column, label, value = line_parts
+        else:
+            raise Exception('unexpected file format')
+        yield Token(
+            line=int(row),
+            offset=int(column),
+            label=label,
+            value=value)
