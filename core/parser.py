@@ -86,6 +86,8 @@ class Parser:
     def make_statement(self):
         if self.accept(Identifier.IDENTIFIER):
             return self.make_assignment()
+        elif self.accept(Symbol.SEMICOLON):
+            return self.make_sequence()
         self.fail('invalid statement')
 
     def make_sequence(self):
