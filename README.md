@@ -16,8 +16,57 @@ export PATH="$(pwd):$PATH"
 # List help contents for elang
 elang --help
 
+# Run test suit
+elang test
+
 # Deactivate virtual environment
 deactivate
+```
+
+### Demo
+
+```bash
+echo 'putc(123);' | elang lex | elang parse --format json
+```
+
+Produces Abstract Syntax Tree as standard output:
+```
+{
+  "type": "Sequence",
+  "left": {
+    "type": "Print_character",
+    "left": {
+      "type": "Integer",
+      "value": "123"
+    }
+  }
+}
+```
+
+## Python API
+
+```python
+lex = Lexer()
+tokens = Lexer.from_token_file(file)
+tokens = lex.from_program_file(file)
+tokens = lex.from_program_lines(lines)
+tokens = lex(program_line)
+line_generator = Lexer.as_lines(tokens)
+```
+
+```python
+parse = Parser()
+ast = parse(tokens)
+ast_dict = ast.as_dict()
+json_str = ast.as_json()
+line_generator = ast.as_lines()
+```
+
+### TODO
+
+```python
+interpret = Interpreter()
+interpret(ast)
 ```
 
 ## Run Tests

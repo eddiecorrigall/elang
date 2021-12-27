@@ -49,6 +49,7 @@ class Node:
         self.value = value
 
     def as_dict(self) -> dict:
+        # Recursive traversal
         result = dict(type=self.type.label)
         if self.value:
             result['value'] = self.value
@@ -59,8 +60,9 @@ class Node:
         return result
 
     def as_json(self) -> str:
+        # Recursive traversal
         return json.dumps(self.as_dict(), indent=2)
-    
+
     def as_lines(self) -> Iterable[str]:
         # Non-recursive traversal
         stack = [self]
@@ -75,8 +77,7 @@ class Node:
                 stack.append(node.right)  # Push (to end)
                 stack.append(node.left)  # Push (to end)
 
-    @classmethod
-    def as_lines_recursive(cls, node: Node) -> Iterable[str]:
+    def as_lines_recursive(self, node: Node) -> Iterable[str]:
         if node is None:
             yield ';'
         else:
@@ -84,10 +85,10 @@ class Node:
                 yield '%s\t%s' % (node.label, node.value)
             else:
                 yield node.label
-                for x in cls.as_lines(node.left):
-                    yield x
-                for x in cls.as_lines(node.right):
-                    yield x
+                for left_node in self.as_lines_recursive(node.left):
+                    yield left_node
+                for right_node in self.as_lines_recursive(node.right):
+                    yield right_node
 
     def __repr__(self) -> str:
         return '<{class_name} {type}>'.format(

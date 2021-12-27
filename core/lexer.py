@@ -39,7 +39,7 @@ class Lexer:
         return self.from_program_line(line, row=1)
 
     @classmethod
-    def tokens_to_lines(cls, tokens: Iterable[Token]) -> Iterable[str]:
+    def as_lines(cls, tokens: Iterable[Token]) -> Iterable[str]:
         for token in tokens:
             parts = [str(token.row), str(token.column), token.label]
             if token.value is not None:

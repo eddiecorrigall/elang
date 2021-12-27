@@ -38,7 +38,7 @@ def lex(file, format):
     """Perform Lexical Analysis"""
     if format == 'lines':
         tokens = lexer.from_program_file(file)
-        for line in Lexer.tokens_to_lines(tokens):
+        for line in Lexer.as_lines(tokens):
             print(line)
     elif format == 'json':
         raise click.ClickException('format not implemented')
