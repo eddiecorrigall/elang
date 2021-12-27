@@ -1,5 +1,5 @@
 from core.ast import Node, NodeType
-from core.tokens import Identifier, Literal, Operator, Symbol, Terminal, Token, TokenType
+from core.tokens import Identifier, Keyword, Literal, Operator, Symbol, Terminal, Token, TokenType
 
 from typing import List, Optional
 
@@ -60,38 +60,74 @@ class Parser:
         return Node(type=type, left=left, right=right)
 
     def make_identifier(self):
+        # Leaf
         name = self.expect(Identifier.IDENTIFIER)
         return self.make_leaf(NodeType.IDENTIFIER, name)
 
     def make_integer(self):
+        # Leaf
         value = self.expect(Literal.INT)
         integer = self.make_leaf(NodeType.INT, value)
         return integer
 
     def make_expression(self):
+        # Simplified
         if self.accept(Identifier.IDENTIFIER):
             return self.make_identifier()
         if self.accept(Literal.INT):
             return self.make_integer()
+        if self.accept(Symbol.OPEN_PARENTHESIS):
+            return self.make_expression_parenthesis()
         self.fail('invalid expression')
+    
+    def make_expression_parenthesis(self):
+        '''
+        "(" expression ")"
+        '''
+        self.expect(Symbol.OPEN_PARENTHESIS)
+        expression = self.make_expression()
+        self.expect(Symbol.CLOSE_PARENTHESIS)
+        return expression
 
     def make_assignment(self):
+        '''
+        identifier "=" expression ";"
+        '''
         identifier = self.make_identifier()
         self.expect(Operator.ASSIGN)
         expression = self.make_expression()
         assignment = self.make_node(NodeType.ASSIGN, identifier, expression)
         self.expect(Symbol.SEMICOLON)
         return assignment
+    
+    def make_print_character(self):
+        '''
+        "putc" expression_parenthesis ";"
+        '''
+        self.expect(Keyword.PRINT_CHARACTER)
+        expression_parenthesis = self.make_expression_parenthesis()
+        print_character = self.make_node(NodeType.PRINT_CHARACTER, expression_parenthesis)
+        self.expect(Symbol.SEMICOLON)
+        return print_character
 
     def make_statement(self):
+        '''
+        statement = ";"
+                  | assignment
+                  | print_character
+        '''
+        if self.accept(Symbol.SEMICOLON):
+            return self.make_sequence()
         if self.accept(Identifier.IDENTIFIER):
             return self.make_assignment()
-        elif self.accept(Symbol.SEMICOLON):
-            return self.make_sequence()
+        if self.accept(Keyword.PRINT_CHARACTER):
+            return self.make_print_character()
         self.fail('invalid statement')
 
     def make_sequence(self):
-        # statement list
+        '''
+        sequence = { statement }
+        '''
         sequence = None
         self.next_token()
         while not self.accept(Terminal.TERMINAL):

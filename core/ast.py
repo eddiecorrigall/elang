@@ -25,6 +25,7 @@ class NodeType(Enum):
     IDENTIFIER = ('Identifier', True)
     ASSIGN = ('Assign', )
     INT = ('Integer', True)
+    PRINT_CHARACTER = ('Print_character', )
 
 
 class Node:
@@ -64,16 +65,29 @@ class Node:
         # Non-recursive traversal
         stack = [self]
         while stack:
-            node = stack.pop()
+            node = stack.pop()  # Pop (from end)
             if node is None:
-                continue
+                yield ';'
             elif node.is_leaf:
                 yield '%s\t%s' % (node.label, node.value)
             else:
                 yield node.label
-                stack.insert(0, node.left)
-                stack.insert(0, node.right)
-        yield ';'
+                stack.append(node.right)  # Push (to end)
+                stack.append(node.left)  # Push (to end)
+
+    @classmethod
+    def as_lines_recursive(cls, node: Node) -> Iterable[str]:
+        if node is None:
+            yield ';'
+        else:
+            if node.is_leaf:
+                yield '%s\t%s' % (node.label, node.value)
+            else:
+                yield node.label
+                for x in cls.as_lines(node.left):
+                    yield x
+                for x in cls.as_lines(node.right):
+                    yield x
 
     def __repr__(self) -> str:
         return '<{class_name} {type}>'.format(

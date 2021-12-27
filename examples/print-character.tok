@@ -1,0 +1,6 @@
+1	1	Keyword_putc
+1	5	Symbol_openparenthesis
+1	6	Literal_integer	123
+1	9	Symbol_closeparenthesis
+1	10	Symbol_semicolon
+2	1	Terminal
