@@ -1,0 +1,16 @@
+1	1	Keyword_if
+1	4	Symbol_openparenthesis
+1	5	Identifier	is_even
+1	12	Symbol_closeparenthesis
+2	5	Keyword_putc
+2	9	Symbol_openparenthesis
+2	10	Literal_integer	0
+2	11	Symbol_closeparenthesis
+2	12	Symbol_semicolon
+3	1	Keyword_else
+4	5	Keyword_putc
+4	9	Symbol_openparenthesis
+4	10	Literal_integer	1
+4	11	Symbol_closeparenthesis
+4	12	Symbol_semicolon
+5	1	Terminal

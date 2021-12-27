@@ -99,7 +99,23 @@ class Parser:
         assignment = self.make_node(NodeType.ASSIGN, identifier, expression)
         self.expect(Symbol.SEMICOLON)
         return assignment
-    
+
+    def make_if(self):
+        '''
+        "if" expression_parenthesis statement [ "else" statement ]
+        '''
+        self.expect(Keyword.IF)
+        expression_parenthesis = self.make_expression_parenthesis()
+        if_statement = self.make_statement()
+        else_statement = None
+        if self.accept(Keyword.ELSE):
+            self.expect(Keyword.ELSE)
+            else_statement = self.make_statement()
+        return self.make_node(
+            NodeType.IF,
+            expression_parenthesis,
+            self.make_node(NodeType.IF, if_statement, else_statement))
+
     def make_print_character(self):
         '''
         "putc" expression_parenthesis ";"
@@ -114,12 +130,15 @@ class Parser:
         '''
         statement = ";"
                   | assignment
+                  | if
                   | print_character
         '''
         if self.accept(Symbol.SEMICOLON):
             return self.make_sequence()
         if self.accept(Identifier.IDENTIFIER):
             return self.make_assignment()
+        if self.accept(Keyword.IF):
+            return self.make_if()
         if self.accept(Keyword.PRINT_CHARACTER):
             return self.make_print_character()
         self.fail('invalid statement')

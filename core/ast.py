@@ -25,6 +25,8 @@ class NodeType(Enum):
     IDENTIFIER = ('Identifier', True)
     ASSIGN = ('Assign', )
     INT = ('Integer', True)
+    IF = ('If', )
+    ELSE = ('Else', )
     PRINT_CHARACTER = ('Print_character', )
 
 

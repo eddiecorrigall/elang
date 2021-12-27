@@ -1,0 +1,4 @@
+if (is_even)
+    putc(0);
+else
+    putc(1);
