@@ -6,12 +6,12 @@ from typing import List, Optional
 
 class Parser:
     @property
-    def line(self) -> int:
-        return self.token and self.token.line
+    def row(self) -> int:
+        return self.token and self.token.row
     
     @property
-    def offset(self) -> int:
-        return self.token and self.token.offset
+    def column(self) -> int:
+        return self.token and self.token.column
 
     @property
     def token_value(self) -> str:
@@ -35,8 +35,8 @@ class Parser:
             message,
             'label {}'.format(self.token_label),
             'value {}'.format(self.token_value),
-            'line {}'.format(self.line),
-            'offset {}'.format(self.offset),
+            'line {}'.format(self.row),
+            'character {}'.format(self.column),
         ]))
 
     def next_token(self) -> None:

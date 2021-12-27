@@ -6,7 +6,6 @@ import sys
 
 from core.lexer import Lexer
 from core.parser import Parser
-from core.tokens import tokens_from_file, tokens_to_lines
 
 
 lexer = Lexer()
@@ -31,21 +30,20 @@ has_format_option = click.option(
 def cli():
     pass
 
+
 @cli.command()
 @has_file_option
 @has_format_option
 def lex(file, format):
     """Perform Lexical Analysis"""
-    with file:
-        text = file.read()  # entire file
-        tokens = lexer(text)
-        if format == 'lines':
-            for line in tokens_to_lines(tokens):
-                print(line)
-        elif format == 'json':
-            raise click.ClickException('format not implemented')
-        else:
-            raise click.ClickException('invalid format')
+    if format == 'lines':
+        tokens = lexer.from_program_file(file)
+        for line in Lexer.tokens_to_lines(tokens):
+            print(line)
+    elif format == 'json':
+        raise click.ClickException('format not implemented')
+    else:
+        raise click.ClickException('invalid format')
 
 
 @cli.command()
@@ -53,16 +51,15 @@ def lex(file, format):
 @has_format_option
 def parse(file, format):
     """Perform Syntactic Analysis"""
-    with file:
-        tokens = tokens_from_file(file)
-        ast = parser(tokens)
-        if format == 'lines':
-            for line in ast.as_lines():
-                print(line)
-        elif format == 'json':
-            print(ast.as_json())
-        else:
-            raise click.ClickException('invalid output format')
+    tokens = lexer.from_token_file(file)
+    ast = parser(tokens)
+    if format == 'lines':
+        for line in ast.as_lines():
+            print(line)
+    elif format == 'json':
+        print(ast.as_json())
+    else:
+        raise click.ClickException('invalid output format')
 
 
 @cli.command()

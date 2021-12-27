@@ -11,20 +11,21 @@ lex = Lexer()
 
 
 class LexerTestBase(unittest.TestCase):
-    def givenProgramLines(self, program_lines: List[str]):
-        self.program = '\n'.join(program_lines)
+    def givenProgramLines(self, program_lines: Iterable[str]):
+        self.program_lines = program_lines
 
-    def givenProgramLine(self, program):
-        self.program = program
+    def givenProgramLine(self, program_line: str):
+        self.program_lines = [program_line]
 
     def whenLex(self):
-        self.output = lex(self.program)
+        self.output = lex.from_program_lines(self.program_lines)
         self.assertIsInstance(self.output, Iterable)
         # Convert generator to list
         self.output = list(self.output)
     
     def whenLexParseLine(self):
-        self.output = lex.parse_line(line=self.program, line_number=1)
+        self.assertEqual(1, len(self.program_lines))
+        self.output = lex(self.program_lines[0])
         self.assertIsInstance(self.output, Iterable)
         # Convert generator to list
         self.output = list(self.output)

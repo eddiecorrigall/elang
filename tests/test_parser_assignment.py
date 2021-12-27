@@ -6,11 +6,11 @@ from tests.parser_test_base import ParserTestBase
 class TestParserAssignment(ParserTestBase):
     def test_assign_literal_integer(self):
         self.givenTokens([
-            Token(line=1, offset=1, label=Identifier.IDENTIFIER.label, value='abc'),
-            Token(line=1, offset=5, label=Operator.ASSIGN.label, value=None),
-            Token(line=1, offset=7, label=Literal.INT.label, value='123'),
-            Token(line=1, offset=10, label=Symbol.SEMICOLON.label, value=None),
-            Token(line=2, offset=1, label=Terminal.TERMINAL.label, value=None),
+            Token(1, 1, Identifier.IDENTIFIER.label, 'abc'),
+            Token(1, 5, Operator.ASSIGN.label, None),
+            Token(1, 7, Literal.INT.label, '123'),
+            Token(1, 10, Symbol.SEMICOLON.label, None),
+            Token(2, 1, Terminal.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnAbstractSyntaxTree(dict(
@@ -30,11 +30,11 @@ class TestParserAssignment(ParserTestBase):
 
     def test_assign_identifier(self):
         self.givenTokens([
-            Token(line=1, offset=1, label=Identifier.IDENTIFIER.label, value='abc'),
-            Token(line=1, offset=5, label=Operator.ASSIGN.label, value=None),
-            Token(line=1, offset=7, label=Identifier.IDENTIFIER.label, value='xyz'),
-            Token(line=1, offset=10, label=Symbol.SEMICOLON.label, value=None),
-            Token(line=2, offset=1, label=Terminal.TERMINAL.label, value=None),
+            Token(1, 1, Identifier.IDENTIFIER.label, 'abc'),
+            Token(1, 5, Operator.ASSIGN.label, None),
+            Token(1, 7, Identifier.IDENTIFIER.label, 'xyz'),
+            Token(1, 10, Symbol.SEMICOLON.label, None),
+            Token(2, 1, Terminal.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnAbstractSyntaxTree(dict(
