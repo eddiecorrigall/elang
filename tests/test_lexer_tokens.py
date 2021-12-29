@@ -44,19 +44,11 @@ class TestTokenEquality(unittest.TestCase):
 class TestTokens(LexerTestBase):
     def test_operators(self):
         for operator in Operator:
-            if operator == Operator.NEGATE:
-                # Lexer should output Operator.SUBTRACT instead
-                continue
             with self.subTest('test operator {}'.format(operator.name)):
                 self.givenProgramLine(operator.sequence)
                 self.whenLexParseLine()
                 self.thenReturnTokenTypes([operator])
     
-    def test_operator_negate(self):
-        self.givenProgramLine(Operator.NEGATE.sequence)
-        self.whenLexParseLine()
-        self.thenReturnTokenTypes([Operator.SUBTRACT])
-
     def test_symbols(self):
         for symbol in Symbol:
             with self.subTest('test symbol {}'.format(symbol.name)):

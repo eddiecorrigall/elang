@@ -42,7 +42,6 @@ class Operator(TokenType):
     MOD = ('Operator_mod', r'%', '%')
     ADD = ('Operator_add', r'\+', '+')
     SUBTRACT = ('Operator_subtract', r'\-', '-')
-    NEGATE = ('Operator_negate', r'\-', '-')
     LESS_OR_EQUAL = ('Operator_lessequal', r'<=', '<=')
     LESS = ('Operator_less', r'<', '<')
     GREATER_OR_EQUAL = ('Operator_greaterequal', r'>=', '>=')

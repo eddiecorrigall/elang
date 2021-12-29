@@ -24,10 +24,6 @@ class Lexer:
         token_types.extend(Literal)
         token_types.extend(Mismatch)
 
-        # Remove NEGATE
-        # Turning some SUBTRACT into NEGATE is handled by syntax analyzer
-        token_types.remove(Operator.NEGATE)
-
         self.tokens = token_types
         self.regex = '|'.join([self.get_regex_pair(token) for token in token_types])
         
