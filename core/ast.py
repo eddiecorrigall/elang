@@ -33,6 +33,7 @@ class NodeType(Enum):
     LESS_THAN_OR_EQUAL = ('LessThanOrEqual', )
     GREATER_THAN = ('GreaterThan', )
     GREATER_THAN_OR_EQUAL = ('GreaterThanEqual', ),
+    NOT = ('Not', )
     IDENTIFIER = ('Identifier', True)
     ASSIGN = ('Assign', )
     INT = ('Integer', True)

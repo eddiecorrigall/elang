@@ -113,12 +113,21 @@ class Parser:
         right_expression = self.parse_expression()
         return self.make_node(type, left_expression, right_expression)
 
+    def parse_expression_not(self) -> Node:
+        '''
+        expression_not = "!" expression ;
+        '''
+        self.expect(Operator.NOT)
+        expression = self.parse_expression()
+        return self.make_node(NodeType.NOT, expression)
+
     def parse_expression(self) -> Node:
         '''
         expression = expression_parenthesis
                    | integer
                    | string
                    | identifier
+                   | expression_not
                    | expression_binary
                    ;
         '''
@@ -130,6 +139,8 @@ class Parser:
             return self.parse_string()
         elif self.accept(Identifier.IDENTIFIER):
             return self.parse_identifier()
+        elif self.accept(Operator.NOT):
+            return self.parse_expression_not()
         else:
             return self.parse_expression_binary()
     

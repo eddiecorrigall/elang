@@ -65,6 +65,8 @@ class Walker:
             return self.walk(node.left) > self.walk(node.right)
         elif node.type is NodeType.GREATER_THAN_OR_EQUAL:
             return self.walk(node.left) >= self.walk(node.right)
+        elif node.type is NodeType.NOT:
+            return 0 if self.walk(node.left) else 1
         elif node.type is NodeType.IF:
             if self.walk(node.left):
                 self.walk(node.right.left)
