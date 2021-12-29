@@ -105,9 +105,13 @@ class Parser:
             type = NodeType.GREATER_THAN
         elif self.accept(Operator.GREATER_OR_EQUAL):
             type = NodeType.GREATER_THAN_OR_EQUAL
+        elif self.accept(Operator.AND):
+            type = NodeType.AND
+        elif self.accept(Operator.OR):
+            type = NodeType.OR
         else:
             # Unknown / unregistered
-            self.fail('expected binary operator')
+            self.fail('unknown operator')
         self.next_token()  # Consume operator
         left_expression = self.parse_expression()
         right_expression = self.parse_expression()
