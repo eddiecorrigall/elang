@@ -43,12 +43,28 @@ class Walker:
             value = self.walk(node.right)
             self.data[name] = value
             return value
-        elif node.type is NodeType.MULTIPLY:
-            return self.walk(node.left) * self.walk(node.right)
         elif node.type is NodeType.ADD:
             return self.walk(node.left) + self.walk(node.right)
+        elif node.type is NodeType.SUBTRACT:
+            return self.walk(node.left) - self.walk(node.right)
+        elif node.type is NodeType.MULTIPLY:
+            return self.walk(node.left) * self.walk(node.right)
+        elif node.type is NodeType.DIVIDE:
+            return self.walk(node.left) / self.walk(node.right)
+        elif node.type is NodeType.MOD:
+            return self.walk(node.left) % self.walk(node.right)
+        elif node.type is NodeType.EQUAL:
+            return self.walk(node.left) == self.walk(node.right)
+        elif node.type is NodeType.NOT_EQUAL:
+            return self.walk(node.left) != self.walk(node.right)
         elif node.type is NodeType.LESS_THAN:
             return self.walk(node.left) < self.walk(node.right)
+        elif node.type is NodeType.LESS_THAN_OR_EQUAL:
+            return self.walk(node.left) <= self.walk(node.right)
+        elif node.type is NodeType.GREATER_THAN:
+            return self.walk(node.left) > self.walk(node.right)
+        elif node.type is NodeType.GREATER_THAN_OR_EQUAL:
+            return self.walk(node.left) >= self.walk(node.right)
         elif node.type is NodeType.IF:
             if self.walk(node.left):
                 self.walk(node.right.left)

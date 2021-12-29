@@ -27,11 +27,12 @@ class NodeType(Enum):
     MULTIPLY = ('Multiply', )
     DIVIDE = ('Divide', )
     MOD = ('Mod', )
-    NOT = ('Not', )
+    EQUAL = ('Equal', )
+    NOT_EQUAL = ('NotEqual', )
     LESS_THAN = ('LessThan', )
-    LESS_OR_EQUAL_THAN = ('LessThanOrEqual', )
+    LESS_THAN_OR_EQUAL = ('LessThanOrEqual', )
     GREATER_THAN = ('GreaterThan', )
-    GREATER_OR_EQUAL_THAN = ('GreaterOrEqualThan', ),
+    GREATER_THAN_OR_EQUAL = ('GreaterThanEqual', ),
     IDENTIFIER = ('Identifier', True)
     ASSIGN = ('Assign', )
     INT = ('Integer', True)

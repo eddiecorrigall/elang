@@ -95,13 +95,18 @@ class Parser:
             type = NodeType.MOD
         elif self.accept(Operator.LESS):
             type = NodeType.LESS_THAN
+        elif self.accept(Operator.EQUAL):
+            type = NodeType.EQUAL
+        elif self.accept(Operator.NOT_EQUAL):
+            type = NodeType.NOT_EQUAL
         elif self.accept(Operator.LESS_OR_EQUAL):
-            type = NodeType.LESS_OR_EQUAL_THAN
+            type = NodeType.LESS_THAN_OR_EQUAL
         elif self.accept(Operator.GREATER):
             type = NodeType.GREATER_THAN
         elif self.accept(Operator.GREATER_OR_EQUAL):
-            type = NodeType.GREATER_OR_EQUAL_THAN
+            type = NodeType.GREATER_THAN_OR_EQUAL
         else:
+            # Unknown / unregistered
             self.fail('expected binary operator')
         self.next_token()  # Consume operator
         left_expression = self.parse_expression()
