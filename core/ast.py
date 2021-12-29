@@ -35,6 +35,7 @@ class NodeType(Enum):
     IDENTIFIER = ('Identifier', True)
     ASSIGN = ('Assign', )
     INT = ('Integer', True)
+    STR = ('String', True)
     WHILE = ('While', )
     IF = ('If', )
     ELSE = ('Else', )

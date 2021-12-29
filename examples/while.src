@@ -1,5 +1,6 @@
-x = 1;
-while (<= x 10) { // Loop until x is 10
-    putc(x);
-    x = + x 1; // Add one to x
+A = 65; // ASCII value for 'A'
+offset = 0;
+while (< offset 26) { // Loop until offset is 25
+    putc(+ A offset);
+    offset = + offset 1; // Add one to offset
 }

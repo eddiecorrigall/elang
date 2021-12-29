@@ -62,11 +62,9 @@ json_str = ast.as_json()
 line_generator = ast.as_lines()
 ```
 
-### TODO
-
 ```python
-interpret = Interpreter()
-interpret(ast)
+walk = Walker()
+walk(ast)
 ```
 
 ## Run Tests

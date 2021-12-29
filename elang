@@ -6,10 +6,12 @@ import sys
 
 from core.lexer import Lexer
 from core.parser import Parser
+from core.walker import Walker
 
 
 lexer = Lexer()
 parser = Parser()
+walker = Walker()
 
 
 has_file_option = click.option(
@@ -35,7 +37,7 @@ def cli():
 @has_file_option
 @has_format_option
 def lex(file, format):
-    """Perform Lexical Analysis"""
+    """Perform Lexical Analysis (aka lexer)"""
     if format == 'lines':
         tokens = lexer.from_program_file(file)
         for line in Lexer.as_lines(tokens):
@@ -50,7 +52,7 @@ def lex(file, format):
 @has_file_option
 @has_format_option
 def parse(file, format):
-    """Perform Syntactic Analysis"""
+    """Perform Syntactic Analysis (aka parser)"""
     tokens = lexer.from_token_file(file)
     ast = parser(tokens)
     if format == 'lines':
@@ -60,6 +62,22 @@ def parse(file, format):
         print(ast.as_json())
     else:
         raise click.ClickException('invalid output format')
+
+
+@cli.command()
+@has_file_option
+@click.option(
+    '--show-symbol-table',
+    is_flag=True,
+    default=False,
+)
+def run(file, show_symbol_table):
+    """Interpret Abstract Syntax Tree (aka walker)"""
+    tokens = lexer.from_program_file(file)
+    ast = parser(tokens)
+    walker(ast)
+    if show_symbol_table:
+        print('\nSymbol Table:', walker.data)
 
 
 @cli.command()
