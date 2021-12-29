@@ -29,7 +29,7 @@ class TestProgram(LexerTestBase):
             Token(3, 10, Symbol.OPEN_PARENTHESIS.label, None),
             Token(3, 12, Identifier.IDENTIFIER.label, 'n'),
             Token(3, 14, Symbol.COMMA.label, None),
-            Token(3, 16, Literal.STR.label, '" "'),
+            Token(3, 16, Literal.STR.label, ' '),
             Token(3, 20, Symbol.CLOSE_PARENTHESIS.label, None),
             Token(3, 22, Symbol.SEMICOLON.label, None),
             # line 4
@@ -58,7 +58,7 @@ class TestProgram(LexerTestBase):
             Token(1, 12, Symbol.OPEN_PARENTHESIS.label, None),
             Token(1, 13, Identifier.IDENTIFIER.label, 'n'),
             Token(1, 14, Symbol.COMMA.label, None),
-            Token(1, 15, Literal.STR.label, '" "'),
+            Token(1, 15, Literal.STR.label, ' '),
             Token(1, 18, Symbol.CLOSE_PARENTHESIS.label, None),
             Token(1, 19, Symbol.SEMICOLON.label, None),
             Token(1, 20, Identifier.IDENTIFIER.label, 'count'),
@@ -80,7 +80,7 @@ class TestProgram(LexerTestBase):
         self.thenReturnTokens([
             Token(1, 1, Keyword.PRINT_STRING.label, None),
             Token(1, 6, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(1, 7, Literal.STR.label, '"Hello, World!\\n"'),
+            Token(1, 7, Literal.STR.label, 'Hello, World!\\n'),
             Token(1, 24, Symbol.CLOSE_PARENTHESIS.label, None),
             Token(1, 25, Symbol.SEMICOLON.label, None),
 
@@ -104,7 +104,7 @@ class TestProgram(LexerTestBase):
             Token(2, 6, Symbol.OPEN_PARENTHESIS.label, None),
             Token(2, 7, Identifier.IDENTIFIER.label, 'phoenix_number'),
             Token(2, 21, Symbol.COMMA.label, None),
-            Token(2, 23, Literal.STR.label, '"\\n"'),
+            Token(2, 23, Literal.STR.label, '\\n'),
             Token(2, 27, Symbol.CLOSE_PARENTHESIS.label, None),
             Token(2, 28, Symbol.SEMICOLON.label, None),
 
@@ -129,13 +129,13 @@ class TestProgram(LexerTestBase):
             # line 2
             Token(2, 1, Keyword.PRINT_STRING.label, None),
             Token(2, 6, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(2, 7, Literal.STR.label, r'"\nHello World\nGood Bye\nok\n"'),
+            Token(2, 7, Literal.STR.label, r'\nHello World\nGood Bye\nok\n'),
             Token(2, 38, Symbol.CLOSE_PARENTHESIS.label, None),
             Token(2, 39, Symbol.SEMICOLON.label, None),
             # line 3
             Token(3, 1, Keyword.PRINT_STRING.label, None),
             Token(3, 6, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(3, 7, Literal.STR.label, r'"Print a slash n - \\n.\n"'),
+            Token(3, 7, Literal.STR.label, r'Print a slash n - \\n.\n'),
             Token(3, 33, Symbol.CLOSE_PARENTHESIS.label, None),
             Token(3, 34, Symbol.SEMICOLON.label, None),
             # line 4
@@ -169,11 +169,11 @@ class TestProgram(LexerTestBase):
             # line 3
             Token(3, 5, Keyword.PRINT_STRING.label, None),
             Token(3, 10, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(3, 11, Literal.STR.label, r'"count is: "'),
+            Token(3, 11, Literal.STR.label, r'count is: '),
             Token(3, 23, Symbol.COMMA.label, None),
             Token(3, 25, Identifier.IDENTIFIER.label, r'count'),
             Token(3, 30, Symbol.COMMA.label, None),
-            Token(3, 32, Literal.STR.label, r'"\n"'),
+            Token(3, 32, Literal.STR.label, r'\n'),
             Token(3, 36, Symbol.CLOSE_PARENTHESIS.label, None),
             Token(3, 37, Symbol.SEMICOLON.label, None),
             # line 4

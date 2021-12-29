@@ -87,3 +87,13 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
 - https://en.wikibooks.org/wiki/Compiler_Construction/Syntax_Analysis
 - https://docs.python.org/3/library/re.html#writing-a-tokenizer
 - https://en.wikipedia.org/wiki/Operator-precedence_parser
+
+## TODO
+
+- test `putc('');` => error
+- test `putc('x');` => 'x'
+- test `putc(120);` => 'x'
+- test `print("");` => ''
+- test `print("x");` => 'x'
+- test `print('x');` => '120'
+- test `print(120);` => '120'

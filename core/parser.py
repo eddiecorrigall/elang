@@ -69,6 +69,12 @@ class Parser:
         value = self.expect(Literal.INT)
         integer = self.make_leaf(NodeType.INT, value)
         return integer
+    
+    def parse_string(self) -> Node:
+        # Leaf
+        value = self.expect(Literal.STR)
+        string = self.make_leaf(NodeType.STR, value)
+        return string
 
     def parse_expression_binary(self):
         '''
@@ -106,6 +112,7 @@ class Parser:
         '''
         expression = expression_parenthesis
                    | integer
+                   | string
                    | identifier
                    | expression_binary
                    ;
@@ -114,6 +121,8 @@ class Parser:
             return self.parse_expression_parenthesis()
         elif self.accept(Literal.INT):
             return self.parse_integer()
+        elif self.accept(Literal.STR):
+            return self.parse_string()
         elif self.accept(Identifier.IDENTIFIER):
             return self.parse_identifier()
         else:
@@ -173,6 +182,16 @@ class Parser:
         print_character = self.make_node(NodeType.PRINT_CHARACTER, expression_parenthesis)
         self.expect(Symbol.SEMICOLON)
         return print_character
+    
+    def parse_print_string(self) -> Node:
+        '''
+        print_string = "print" expression_parenthesis ";" ;
+        '''
+        self.expect(Keyword.PRINT_STRING)
+        expression_parenthesis = self.parse_expression_parenthesis()
+        print_string = self.make_node(NodeType.PRINT_STRING, expression_parenthesis)
+        self.expect(Symbol.SEMICOLON)
+        return print_string
 
     def parse_block(self) -> None:
         '''
@@ -206,6 +225,8 @@ class Parser:
             return self.parse_if()
         elif self.accept(Keyword.PRINT_CHARACTER):
             return self.parse_print_character()
+        elif self.accept(Keyword.PRINT_STRING):
+            return self.parse_print_string()
         else:
             self.fail('invalid statement')
 

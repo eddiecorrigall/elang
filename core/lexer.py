@@ -43,11 +43,15 @@ class Lexer:
         for token in tokens:
             parts = [str(token.row), str(token.column), token.label]
             if token.value is not None:
-                parts.append(token.value)
+                if token.label == Literal.STR.label:
+                    parts.append('"{}"'.format(token.value))
+                else:
+                    parts.append(token.value)
             yield '\t'.join(parts)
 
     @classmethod
     def from_token_file(cls, file: str) -> Iterable[Token]:
+        # TODO: Handle string double quotes
         for line in readlines(file):
             line_parts = line.split('\t')
             value = None
@@ -72,24 +76,33 @@ class Lexer:
         return self.from_program_lines(readlines(file))
 
     def from_program_line(self, line: str, row: int) -> Iterator[Token]:
-        column = None
         for mo in re.finditer(self.regex, line):
             token_label = mo.lastgroup
-            token_value = mo.group()
+
+            # Generically extract token value
+            pair_groups = mo.groups()
+            matched_groups = list(filter(None, pair_groups))
+            if len(matched_groups) == 2:
+                # Assuming 1 capture group per pair
+                token_value = matched_groups[1]
+            else:
+                token_value = str()
+
             column = 1 + mo.start()
             if token_label.startswith('Whitespace') or token_label.startswith('Comment'):
                 continue
             elif token_label == Literal.CHAR.label:
-                if token_value == "'\\n'":
+                if token_value == '\\n':
                     token_value = '10'
-                elif token_value == "'\\\\'":
+                elif token_value == '\\\\':
                     token_value = '92'
-                elif len(token_value) == 3 and token_value not in ["'\n'", "'\\'"]:
-                    token_value = str(ord(token_value[1]))
+                elif len(token_value) == 1 and token_value not in ['\n', '\\']:
+                    token_value = str(ord(token_value[0]))
                 else:
                     raise LexerSyntaxError(
                         'invalid character literal on line {} at character {} - <<<{}>>>'.format(
                             row, column, line))
+                token_label = Literal.INT.label
             elif token_label == Identifier.IDENTIFIER.label:
                 if token_value in self.keyword_lookup:
                     # Identifier matches an existing keyword

@@ -40,6 +40,7 @@ class NodeType(Enum):
     IF = ('If', )
     ELSE = ('Else', )
     PRINT_CHARACTER = ('Print_character', )
+    PRINT_STRING = ('Print_string', )
 
 
 class Node:

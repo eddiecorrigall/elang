@@ -62,5 +62,9 @@ class Walker:
             value = self.walk(node.left)
             character = chr(value)
             print(character, end=str())
+        elif node.type is NodeType.PRINT_STRING:
+            # TODO: handle escaped characters
+            value = self.walk(node.left)
+            print(value)
         else:
             self.fail('unknown node type', node)

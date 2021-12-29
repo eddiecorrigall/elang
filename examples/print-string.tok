@@ -1,0 +1,6 @@
+1	1	Keyword_print
+1	6	Symbol_openparenthesis
+1	7	Literal_string	"Hello world!"
+1	21	Symbol_closeparenthesis
+1	22	Symbol_semicolon
+2	1	Terminal
