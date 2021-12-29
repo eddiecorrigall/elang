@@ -1,0 +1,9 @@
+a = 1071;
+b = 1029;
+ 
+while (!= b 0) {
+    new_a = b;
+    b     = % a b;
+    a     = new_a;
+}
+print(a); // 21
