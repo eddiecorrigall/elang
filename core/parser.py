@@ -27,7 +27,7 @@ class Parser:
 
     def __call__(self, tokens: List[Token]) -> Node:
         self.tokens = (token for token in tokens)
-        self.token = None
+        self.next_token()   # Consume first token
         return self.parse_sequence()
 
     def fail(self, message: str) -> None:
@@ -97,7 +97,7 @@ class Parser:
             type = NodeType.GREATER_OR_EQUAL_THAN
         else:
             self.fail('expected binary operator')
-        self.next_token()
+        self.next_token()  # Consume operator
         left_expression = self.parse_expression()
         right_expression = self.parse_expression()
         return self.make_node(type, left_expression, right_expression)
@@ -174,33 +174,51 @@ class Parser:
         self.expect(Symbol.SEMICOLON)
         return print_character
 
+    def parse_block(self) -> None:
+        '''
+        block = "{" { statement } "}" ;
+        '''
+        self.expect(Symbol.OPEN_BRACE)
+        sequence = None
+        while not self.accept(Terminal.TERMINAL):
+            if self.accept(Symbol.CLOSE_BRACE):
+                break
+            sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)
+        self.expect(Symbol.CLOSE_BRACE)
+        return sequence
+
     def parse_statement(self) -> Node:
         '''
-        statement = ";"
+        statement = block
                   | assignment
                   | while
                   | if
                   | print_character
                   ;
         '''
-        if self.accept(Symbol.SEMICOLON):
-            return self.parse_sequence()
-        if self.accept(Identifier.IDENTIFIER):
+        if self.accept(Symbol.OPEN_BRACE):
+            return self.parse_block()
+        elif self.accept(Identifier.IDENTIFIER):
             return self.parse_assignment()
-        if self.accept(Keyword.WHILE):
+        elif self.accept(Keyword.WHILE):
             return self.parse_while()
-        if self.accept(Keyword.IF):
+        elif self.accept(Keyword.IF):
             return self.parse_if()
-        if self.accept(Keyword.PRINT_CHARACTER):
+        elif self.accept(Keyword.PRINT_CHARACTER):
             return self.parse_print_character()
-        self.fail('invalid statement')
+        else:
+            self.fail('invalid statement')
 
     def parse_sequence(self) -> Node:
         '''
-        sequence = { statement } ;
+        sequence = ";" | { statement } ;
         '''
         sequence = None
-        self.next_token()
         while not self.accept(Terminal.TERMINAL):
+            if self.accept(Symbol.SEMICOLON):
+                self.next_token()
+                continue
             sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)
+        if sequence is None:
+            sequence = self.make_node(NodeType.SEQUENCE, None)
         return sequence

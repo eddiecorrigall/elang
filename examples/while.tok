@@ -1,0 +1,21 @@
+Sequence
+While
+LessThanOrEqual
+Identifier	x
+Integer	10
+Sequence
+Assign
+Identifier	x
+Add
+Identifier	x
+Integer	1
+Sequence
+Print_character
+Identifier	x
+;
+;
+Sequence
+Assign
+Identifier	x
+Integer	1
+;
