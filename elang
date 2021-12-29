@@ -37,7 +37,7 @@ def cli():
 @has_file_option
 @has_format_option
 def lex(file, format):
-    """Perform Lexical Analysis (aka lexer)"""
+    """Perform Lexical Analysis (aka lexer)."""
     if format == 'lines':
         tokens = lexer.from_program_file(file)
         for line in Lexer.as_lines(tokens):
@@ -52,7 +52,7 @@ def lex(file, format):
 @has_file_option
 @has_format_option
 def parse(file, format):
-    """Perform Syntactic Analysis (aka parser)"""
+    """Perform Syntactic Analysis (aka parser)."""
     tokens = lexer.from_token_file(file)
     ast = parser(tokens)
     if format == 'lines':
@@ -66,13 +66,21 @@ def parse(file, format):
 
 @cli.command()
 @has_file_option
+def walk(file):
+    """Interpret Abstract Syntax Tree (aka walker)"""
+    # TODO: Load the AST from file, then walk.
+    raise click.ClickException('not yet implemented')
+
+
+@cli.command()
+@has_file_option
 @click.option(
     '--show-symbol-table',
     is_flag=True,
     default=False,
 )
 def run(file, show_symbol_table):
-    """Interpret Abstract Syntax Tree (aka walker)"""
+    """Interpret program from source."""
     tokens = lexer.from_program_file(file)
     ast = parser(tokens)
     walker(ast)
