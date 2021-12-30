@@ -46,10 +46,6 @@ class Node:
     @property
     def is_leaf(self) -> bool:
         return self.type in LEAF_NODE_TYPES
-    
-    @property
-    def label(self) -> str:
-        return self.type.name
 
     def __init__(
             self,
@@ -64,7 +60,7 @@ class Node:
 
     def as_dict(self) -> dict:
         # Recursive traversal
-        result = dict(type=self.label)
+        result = dict(type=self.type.name)
         if self.value:
             result['value'] = self.value
         if self.left:
@@ -85,9 +81,9 @@ class Node:
             if node is None:
                 yield ';'
             elif node.is_leaf:
-                yield '%s\t%s' % (node.label, node.value)
+                yield '%s\t%s' % (node.type.name, node.value)
             else:
-                yield node.label
+                yield node.type.name
                 stack.append(node.right)  # Push (to end)
                 stack.append(node.left)  # Push (to end)
 
@@ -96,9 +92,9 @@ class Node:
             yield ';'
         else:
             if node.is_leaf:
-                yield '%s\t%s' % (node.label, node.value)
+                yield '%s\t%s' % (node.type.name, node.value)
             else:
-                yield node.label
+                yield node.type.name
                 for left_node in self.as_lines_recursive(node.left):
                     yield left_node
                 for right_node in self.as_lines_recursive(node.right):
@@ -107,4 +103,4 @@ class Node:
     def __repr__(self) -> str:
         return '<{class_name} {type}>'.format(
             class_name=self.__class__.__name__,
-            type=self.label)
+            type=self.type.name)
