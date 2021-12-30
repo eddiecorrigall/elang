@@ -1,5 +1,5 @@
 from core.ast import Node, NodeType
-from core.tokens import Identifier, Keyword, Literal, Operator, Symbol, Terminal, Token, TokenType
+from core.tokens import Token, TokenType
 
 from typing import List, Optional
 
@@ -61,18 +61,18 @@ class Parser:
 
     def parse_identifier(self) -> Node:
         # Leaf
-        name = self.expect(Identifier.IDENTIFIER)
+        name = self.expect(TokenType.IDENTIFIER)
         return self.make_leaf(NodeType.IDENTIFIER, name)
 
     def parse_integer(self) -> Node:
         # Leaf
-        value = self.expect(Literal.INT)
+        value = self.expect(TokenType.LITERAL_INT)
         integer = self.make_leaf(NodeType.INT, value)
         return integer
     
     def parse_string(self) -> Node:
         # Leaf
-        value = self.expect(Literal.STR)
+        value = self.expect(TokenType.LITERAL_STR)
         string = self.make_leaf(NodeType.STR, value)
         return string
 
@@ -83,31 +83,31 @@ class Parser:
                               expression
                               ;
         '''
-        if self.accept(Operator.ADD):
+        if self.accept(TokenType.OPERATOR_ADD):
             type = NodeType.ADD
-        elif self.accept(Operator.SUBTRACT):
+        elif self.accept(TokenType.OPERATOR_SUBTRACT):
             type = NodeType.SUBTRACT
-        elif self.accept(Operator.MULTIPLY):
+        elif self.accept(TokenType.OPERATOR_MULTIPLY):
             type = NodeType.MULTIPLY
-        elif self.accept(Operator.DIVIDE):
+        elif self.accept(TokenType.OPERATOR_DIVIDE):
             type = NodeType.DIVIDE
-        elif self.accept(Operator.MOD):
+        elif self.accept(TokenType.OPERATOR_MOD):
             type = NodeType.MOD
-        elif self.accept(Operator.LESS):
+        elif self.accept(TokenType.OPERATOR_LESS):
             type = NodeType.LESS_THAN
-        elif self.accept(Operator.EQUAL):
+        elif self.accept(TokenType.OPERATOR_EQUAL):
             type = NodeType.EQUAL
-        elif self.accept(Operator.NOT_EQUAL):
+        elif self.accept(TokenType.OPERATOR_NOT_EQUAL):
             type = NodeType.NOT_EQUAL
-        elif self.accept(Operator.LESS_OR_EQUAL):
+        elif self.accept(TokenType.OPERATOR_LESS_OR_EQUAL):
             type = NodeType.LESS_THAN_OR_EQUAL
-        elif self.accept(Operator.GREATER):
+        elif self.accept(TokenType.OPERATOR_GREATER):
             type = NodeType.GREATER_THAN
-        elif self.accept(Operator.GREATER_OR_EQUAL):
+        elif self.accept(TokenType.OPERATOR_GREATER_OR_EQUAL):
             type = NodeType.GREATER_THAN_OR_EQUAL
-        elif self.accept(Operator.AND):
+        elif self.accept(TokenType.OPERATOR_AND):
             type = NodeType.AND
-        elif self.accept(Operator.OR):
+        elif self.accept(TokenType.OPERATOR_OR):
             type = NodeType.OR
         else:
             # Unknown / unregistered
@@ -121,7 +121,7 @@ class Parser:
         '''
         expression_not = "!" expression ;
         '''
-        self.expect(Operator.NOT)
+        self.expect(TokenType.OPERATOR_NOT)
         expression = self.parse_expression()
         return self.make_node(NodeType.NOT, expression)
 
@@ -135,15 +135,15 @@ class Parser:
                    | expression_binary
                    ;
         '''
-        if self.accept(Symbol.OPEN_PARENTHESIS):
+        if self.accept(TokenType.SYMBOL_OPEN_PARENTHESIS):
             return self.parse_expression_parenthesis()
-        elif self.accept(Literal.INT):
+        elif self.accept(TokenType.LITERAL_INT):
             return self.parse_integer()
-        elif self.accept(Literal.STR):
+        elif self.accept(TokenType.LITERAL_STR):
             return self.parse_string()
-        elif self.accept(Identifier.IDENTIFIER):
+        elif self.accept(TokenType.IDENTIFIER):
             return self.parse_identifier()
-        elif self.accept(Operator.NOT):
+        elif self.accept(TokenType.OPERATOR_NOT):
             return self.parse_expression_not()
         else:
             return self.parse_expression_binary()
@@ -152,9 +152,9 @@ class Parser:
         '''
         expression_parenthesis = "(" expression ")" ;
         '''
-        self.expect(Symbol.OPEN_PARENTHESIS)
+        self.expect(TokenType.SYMBOL_OPEN_PARENTHESIS)
         expression = self.parse_expression()
-        self.expect(Symbol.CLOSE_PARENTHESIS)
+        self.expect(TokenType.SYMBOL_CLOSE_PARENTHESIS)
         return expression
 
     def parse_assignment(self) -> Node:
@@ -162,17 +162,17 @@ class Parser:
         identifier "=" expression ";" ;
         '''
         identifier = self.parse_identifier()
-        self.expect(Operator.ASSIGN)
+        self.expect(TokenType.OPERATOR_ASSIGN)
         expression = self.parse_expression()
         assignment = self.make_node(NodeType.ASSIGN, identifier, expression)
-        self.expect(Symbol.SEMICOLON)
+        self.expect(TokenType.SYMBOL_SEMICOLON)
         return assignment
 
     def parse_while(self) -> Node:
         '''
         while = "while" expression_parenthesis statement ;
         '''
-        self.expect(Keyword.WHILE)
+        self.expect(TokenType.KEYWORD_WHILE)
         expression_parenthesis = self.parse_expression_parenthesis()
         statement = self.parse_statement()
         return self.make_node(NodeType.WHILE, expression_parenthesis, statement)
@@ -181,12 +181,12 @@ class Parser:
         '''
         if = "if" expression_parenthesis statement [ "else" statement ] ;
         '''
-        self.expect(Keyword.IF)
+        self.expect(TokenType.KEYWORD_IF)
         expression_parenthesis = self.parse_expression_parenthesis()
         if_statement = self.parse_statement()
         else_statement = None
-        if self.accept(Keyword.ELSE):
-            self.expect(Keyword.ELSE)
+        if self.accept(TokenType.KEYWORD_ELSE):
+            self.expect(TokenType.KEYWORD_ELSE)
             else_statement = self.parse_statement()
         return self.make_node(
             NodeType.IF,
@@ -197,33 +197,33 @@ class Parser:
         '''
         print_character = "putc" expression_parenthesis ";" ;
         '''
-        self.expect(Keyword.PRINT_CHARACTER)
+        self.expect(TokenType.KEYWORD_PRINT_CHARACTER)
         expression_parenthesis = self.parse_expression_parenthesis()
         print_character = self.make_node(NodeType.PRINT_CHARACTER, expression_parenthesis)
-        self.expect(Symbol.SEMICOLON)
+        self.expect(TokenType.SYMBOL_SEMICOLON)
         return print_character
     
     def parse_print_string(self) -> Node:
         '''
         print_string = "print" expression_parenthesis ";" ;
         '''
-        self.expect(Keyword.PRINT_STRING)
+        self.expect(TokenType.KEYWORD_PRINT_STRING)
         expression_parenthesis = self.parse_expression_parenthesis()
         print_string = self.make_node(NodeType.PRINT_STRING, expression_parenthesis)
-        self.expect(Symbol.SEMICOLON)
+        self.expect(TokenType.SYMBOL_SEMICOLON)
         return print_string
 
     def parse_block(self) -> None:
         '''
         block = "{" { statement } "}" ;
         '''
-        self.expect(Symbol.OPEN_BRACE)
+        self.expect(TokenType.SYMBOL_OPEN_BRACE)
         sequence = None
-        while not self.accept(Terminal.TERMINAL):
-            if self.accept(Symbol.CLOSE_BRACE):
+        while not self.accept(TokenType.TERMINAL):
+            if self.accept(TokenType.SYMBOL_CLOSE_BRACE):
                 break
             sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)
-        self.expect(Symbol.CLOSE_BRACE)
+        self.expect(TokenType.SYMBOL_CLOSE_BRACE)
         return sequence
 
     def parse_statement(self) -> Node:
@@ -235,17 +235,17 @@ class Parser:
                   | print_character
                   ;
         '''
-        if self.accept(Symbol.OPEN_BRACE):
+        if self.accept(TokenType.SYMBOL_OPEN_BRACE):
             return self.parse_block()
-        elif self.accept(Identifier.IDENTIFIER):
+        elif self.accept(TokenType.IDENTIFIER):
             return self.parse_assignment()
-        elif self.accept(Keyword.WHILE):
+        elif self.accept(TokenType.KEYWORD_WHILE):
             return self.parse_while()
-        elif self.accept(Keyword.IF):
+        elif self.accept(TokenType.KEYWORD_IF):
             return self.parse_if()
-        elif self.accept(Keyword.PRINT_CHARACTER):
+        elif self.accept(TokenType.KEYWORD_PRINT_CHARACTER):
             return self.parse_print_character()
-        elif self.accept(Keyword.PRINT_STRING):
+        elif self.accept(TokenType.KEYWORD_PRINT_STRING):
             return self.parse_print_string()
         else:
             self.fail('invalid statement')
@@ -255,8 +255,8 @@ class Parser:
         sequence = ";" | { statement } ;
         '''
         sequence = None
-        while not self.accept(Terminal.TERMINAL):
-            if self.accept(Symbol.SEMICOLON):
+        while not self.accept(TokenType.TERMINAL):
+            if self.accept(TokenType.SYMBOL_SEMICOLON):
                 self.next_token()
                 continue
             sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)

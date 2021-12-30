@@ -3,8 +3,7 @@ from __future__ import annotations
 import json
 
 from enum import Enum
-from typing import Any, Iterable, Optional
-
+from typing import Iterable, Optional
 
 
 NodeType = Enum('NodeType', [

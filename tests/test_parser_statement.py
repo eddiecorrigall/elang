@@ -1,13 +1,13 @@
 from core.ast import Node, NodeType
-from core.tokens import Identifier, Keyword, Literal, Operator, Symbol, Terminal, Token
+from core.tokens import Token, TokenType
 from tests.parser_test_base import ParserTestBase
 
 
 class TestParserStatementSemicolon(ParserTestBase):
     def test_semicolon(self):
         self.givenTokens([
-            Token(1, 1, Symbol.SEMICOLON.label, None),
-            Token(2, 1, Terminal.TERMINAL.label, None),
+            Token(1, 1, TokenType.SYMBOL_SEMICOLON.label, None),
+            Token(2, 1, TokenType.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnNode(Node(
@@ -29,11 +29,11 @@ class TestParserStatementSemicolon(ParserTestBase):
 class TestParserStatementAssignment(ParserTestBase):
     def test_assign_literal_integer(self):
         self.givenTokens([
-            Token(1, 1, Identifier.IDENTIFIER.label, 'abc'),
-            Token(1, 5, Operator.ASSIGN.label, None),
-            Token(1, 7, Literal.INT.label, '123'),
-            Token(1, 10, Symbol.SEMICOLON.label, None),
-            Token(2, 1, Terminal.TERMINAL.label, None),
+            Token(1, 1, TokenType.IDENTIFIER.label, 'abc'),
+            Token(1, 5, TokenType.OPERATOR_ASSIGN.label, None),
+            Token(1, 7, TokenType.LITERAL_INT.label, '123'),
+            Token(1, 10, TokenType.SYMBOL_SEMICOLON.label, None),
+            Token(2, 1, TokenType.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnNode(Node(
@@ -53,11 +53,11 @@ class TestParserStatementAssignment(ParserTestBase):
 
     def test_assign_identifier(self):
         self.givenTokens([
-            Token(1, 1, Identifier.IDENTIFIER.label, 'abc'),
-            Token(1, 5, Operator.ASSIGN.label, None),
-            Token(1, 7, Identifier.IDENTIFIER.label, 'xyz'),
-            Token(1, 10, Symbol.SEMICOLON.label, None),
-            Token(2, 1, Terminal.TERMINAL.label, None),
+            Token(1, 1, TokenType.IDENTIFIER.label, 'abc'),
+            Token(1, 5, TokenType.OPERATOR_ASSIGN.label, None),
+            Token(1, 7, TokenType.IDENTIFIER.label, 'xyz'),
+            Token(1, 10, TokenType.SYMBOL_SEMICOLON.label, None),
+            Token(2, 1, TokenType.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnNode(Node(
@@ -79,12 +79,12 @@ class TestParserStatementAssignment(ParserTestBase):
 class TestParserStatementPrintCharacter(ParserTestBase):
     def test_print_character_integer(self):
         self.givenTokens([
-            Token(1, 1, Keyword.PRINT_CHARACTER.label, None),
-            Token(1, 5, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(1, 6, Literal.INT.label, '123'),
-            Token(1, 9, Symbol.CLOSE_PARENTHESIS.label, None),
-            Token(1, 10, Symbol.SEMICOLON.label, None),
-            Token(2, 1, Terminal.TERMINAL.label, None),
+            Token(1, 1, TokenType.KEYWORD_PRINT_CHARACTER.label, None),
+            Token(1, 5, TokenType.SYMBOL_OPEN_PARENTHESIS.label, None),
+            Token(1, 6, TokenType.LITERAL_INT.label, '123'),
+            Token(1, 9, TokenType.SYMBOL_CLOSE_PARENTHESIS.label, None),
+            Token(1, 10, TokenType.SYMBOL_SEMICOLON.label, None),
+            Token(2, 1, TokenType.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnNode(Node(
@@ -122,16 +122,16 @@ class TestParserStatementPrintCharacter(ParserTestBase):
 class TestParserStatementIf(ParserTestBase):
     def test_if(self):
         self.givenTokens([
-            Token(1, 1, Keyword.IF.label, None),
-            Token(1, 4, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(1, 5, Identifier.IDENTIFIER.label, 'is_even'),
-            Token(1, 12, Symbol.CLOSE_PARENTHESIS.label, None),
-            Token(2, 5, Keyword.PRINT_CHARACTER.label, None),
-            Token(2, 9, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(2, 10, Literal.INT.label, '0'),
-            Token(2, 11, Symbol.CLOSE_PARENTHESIS.label, None),
-            Token(2, 12, Symbol.SEMICOLON.label, None),
-            Token(3, 1, Terminal.TERMINAL.label, None),
+            Token(1, 1, TokenType.KEYWORD_IF.label, None),
+            Token(1, 4, TokenType.SYMBOL_OPEN_PARENTHESIS.label, None),
+            Token(1, 5, TokenType.IDENTIFIER.label, 'is_even'),
+            Token(1, 12, TokenType.SYMBOL_CLOSE_PARENTHESIS.label, None),
+            Token(2, 5, TokenType.KEYWORD_PRINT_CHARACTER.label, None),
+            Token(2, 9, TokenType.SYMBOL_OPEN_PARENTHESIS.label, None),
+            Token(2, 10, TokenType.LITERAL_INT.label, '0'),
+            Token(2, 11, TokenType.SYMBOL_CLOSE_PARENTHESIS.label, None),
+            Token(2, 12, TokenType.SYMBOL_SEMICOLON.label, None),
+            Token(3, 1, TokenType.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnNode(Node(
@@ -157,22 +157,22 @@ class TestParserStatementIf(ParserTestBase):
 
     def test_if_else(self):
         self.givenTokens([
-            Token(1, 1, Keyword.IF.label, None),
-            Token(1, 4, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(1, 5, Identifier.IDENTIFIER.label, 'is_even'),
-            Token(1, 12, Symbol.CLOSE_PARENTHESIS.label, None),
-            Token(2, 5, Keyword.PRINT_CHARACTER.label, None),
-            Token(2, 9, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(2, 10, Literal.INT.label, '0'),
-            Token(2, 11, Symbol.CLOSE_PARENTHESIS.label, None),
-            Token(2, 12, Symbol.SEMICOLON.label, None),
-            Token(3, 1, Keyword.ELSE.label, None),
-            Token(4, 5, Keyword.PRINT_CHARACTER.label, None),
-            Token(4, 9, Symbol.OPEN_PARENTHESIS.label, None),
-            Token(4, 10, Literal.INT.label, '1'),
-            Token(4, 11, Symbol.CLOSE_PARENTHESIS.label, None),
-            Token(4, 12, Symbol.SEMICOLON.label, None),
-            Token(5, 1, Terminal.TERMINAL.label, None),
+            Token(1, 1, TokenType.KEYWORD_IF.label, None),
+            Token(1, 4, TokenType.SYMBOL_OPEN_PARENTHESIS.label, None),
+            Token(1, 5, TokenType.IDENTIFIER.label, 'is_even'),
+            Token(1, 12, TokenType.SYMBOL_CLOSE_PARENTHESIS.label, None),
+            Token(2, 5, TokenType.KEYWORD_PRINT_CHARACTER.label, None),
+            Token(2, 9, TokenType.SYMBOL_OPEN_PARENTHESIS.label, None),
+            Token(2, 10, TokenType.LITERAL_INT.label, '0'),
+            Token(2, 11, TokenType.SYMBOL_CLOSE_PARENTHESIS.label, None),
+            Token(2, 12, TokenType.SYMBOL_SEMICOLON.label, None),
+            Token(3, 1, TokenType.KEYWORD_ELSE.label, None),
+            Token(4, 5, TokenType.KEYWORD_PRINT_CHARACTER.label, None),
+            Token(4, 9, TokenType.SYMBOL_OPEN_PARENTHESIS.label, None),
+            Token(4, 10, TokenType.LITERAL_INT.label, '1'),
+            Token(4, 11, TokenType.SYMBOL_CLOSE_PARENTHESIS.label, None),
+            Token(4, 12, TokenType.SYMBOL_SEMICOLON.label, None),
+            Token(5, 1, TokenType.TERMINAL.label, None),
         ])
         self.whenParse()
         self.thenReturnNode(Node(

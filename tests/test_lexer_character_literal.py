@@ -1,5 +1,5 @@
 from core.errors import LexerSyntaxError
-from core.tokens import Literal
+from core.tokens import TokenType
 from tests.lexer_test_base import LexerTestBase
 
 
@@ -12,7 +12,7 @@ class TestCharLiteral(LexerTestBase):
     def test_single_character(self):
         self.givenProgramLine("'A'")
         self.whenLexParseLine()
-        self.thenReturnTokenTypes([Literal.INT])
+        self.thenReturnTokenTypes([TokenType.LITERAL_INT])
         self.thenReturnValues(['65'])
     
     def test_two_characters(self):
@@ -33,7 +33,7 @@ class TestCharLiteral(LexerTestBase):
     def test_escaped_newline(self):
         self.givenProgramLine("'\\n'")
         self.whenLexParseLine()
-        self.thenReturnTokenTypes([Literal.INT])
+        self.thenReturnTokenTypes([TokenType.LITERAL_INT])
         self.thenReturnValues(['10'])
 
     def test_single_quote(self):
@@ -54,7 +54,7 @@ class TestCharLiteral(LexerTestBase):
     def test_escaped_backslash(self):
         self.givenProgramLine("'\\\\'")
         self.whenLexParseLine()
-        self.thenReturnTokenTypes([Literal.INT])
+        self.thenReturnTokenTypes([TokenType.LITERAL_INT])
         self.thenReturnValues(['92'])
 
     def test_escaped_single_quote(self):

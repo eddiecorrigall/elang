@@ -1,70 +1,82 @@
 import unittest
 
-from core.tokens import Literal, Operator, Symbol, Keyword, Whitespace
+from core.tokens import TokenType
 from tests.lexer_test_base import LexerTestBase
 
 
 class TestTokenEquality(unittest.TestCase):
     def test_identity_equality(self):
-        self.assertIs(Literal.CHAR, Literal.CHAR)
-        self.assertEqual(Literal.CHAR, Literal.CHAR)
+        self.assertIs(TokenType.LITERAL_CHAR, TokenType.LITERAL_CHAR)
+        self.assertEqual(TokenType.LITERAL_CHAR, TokenType.LITERAL_CHAR)
 
-        self.assertIsNot(Literal.CHAR, Literal.INT)
-        self.assertNotEqual(Literal.CHAR, Literal.INT)
+        self.assertIsNot(TokenType.LITERAL_CHAR, TokenType.LITERAL_INT)
+        self.assertNotEqual(TokenType.LITERAL_CHAR, TokenType.LITERAL_INT)
 
     def test_operator_equality(self):
-        self.assertIs(Operator.ADD, Operator.ADD)
-        self.assertEqual(Operator.ADD, Operator.ADD)
+        self.assertIs(TokenType.OPERATOR_ADD, TokenType.OPERATOR_ADD)
+        self.assertEqual(TokenType.OPERATOR_ADD, TokenType.OPERATOR_ADD)
 
-        self.assertIsNot(Operator.ADD, Operator.SUBTRACT)
-        self.assertNotEqual(Operator.ADD, Operator.SUBTRACT)
+        self.assertIsNot(TokenType.OPERATOR_ADD, TokenType.OPERATOR_SUBTRACT)
+        self.assertNotEqual(TokenType.OPERATOR_ADD, TokenType.OPERATOR_SUBTRACT)
 
     def test_symbol_equality(self):
-        self.assertIs(Symbol.OPEN_PARENTHESIS, Symbol.OPEN_PARENTHESIS)
-        self.assertEqual(Symbol.OPEN_PARENTHESIS, Symbol.OPEN_PARENTHESIS)
+        self.assertIs(TokenType.SYMBOL_OPEN_PARENTHESIS, TokenType.SYMBOL_OPEN_PARENTHESIS)
+        self.assertEqual(TokenType.SYMBOL_OPEN_PARENTHESIS, TokenType.SYMBOL_OPEN_PARENTHESIS)
 
-        self.assertIsNot(Symbol.OPEN_PARENTHESIS, Symbol.CLOSE_PARENTHESIS)
-        self.assertNotEqual(Symbol.OPEN_PARENTHESIS, Symbol.CLOSE_PARENTHESIS)
-
-    def test_keyword_equality(self):
-        self.assertIs(Keyword.IF, Keyword.IF)
-        self.assertEqual(Keyword.IF, Keyword.IF)
-
-        self.assertIsNot(Keyword.IF, Keyword.ELSE)
-        self.assertNotEqual(Keyword.IF, Keyword.ELSE)
+        self.assertIsNot(TokenType.SYMBOL_OPEN_PARENTHESIS, TokenType.SYMBOL_CLOSE_PARENTHESIS)
+        self.assertNotEqual(TokenType.SYMBOL_OPEN_PARENTHESIS, TokenType.SYMBOL_CLOSE_PARENTHESIS)
 
     def test_keyword_equality(self):
-        self.assertIs(Whitespace.NEWLINE, Whitespace.NEWLINE)
-        self.assertEqual(Whitespace.NEWLINE, Whitespace.NEWLINE)
+        self.assertIs(TokenType.KEYWORD_IF, TokenType.KEYWORD_IF)
+        self.assertEqual(TokenType.KEYWORD_IF, TokenType.KEYWORD_IF)
 
-        self.assertIsNot(Whitespace.NEWLINE, Whitespace.TAB)
-        self.assertNotEqual(Whitespace.NEWLINE, Whitespace.TAB)
+        self.assertIsNot(TokenType.KEYWORD_IF, TokenType.KEYWORD_ELSE)
+        self.assertNotEqual(TokenType.KEYWORD_IF, TokenType.KEYWORD_ELSE)
+
+    def test_keyword_equality(self):
+        self.assertIs(TokenType.WHITESPACE_NEWLINE, TokenType.WHITESPACE_NEWLINE)
+        self.assertEqual(TokenType.WHITESPACE_NEWLINE, TokenType.WHITESPACE_NEWLINE)
+
+        self.assertIsNot(TokenType.WHITESPACE_NEWLINE, TokenType.WHITESPACE_TAB)
+        self.assertNotEqual(TokenType.WHITESPACE_NEWLINE, TokenType.WHITESPACE_TAB)
 
 
 class TestTokens(LexerTestBase):
     def test_operators(self):
-        for operator in Operator:
+        for token_type in TokenType:
+            if not token_type.name.startswith('OPERATOR_'):
+                continue
+            operator = token_type
             with self.subTest('test operator {}'.format(operator.name)):
                 self.givenProgramLine(operator.sequence)
                 self.whenLexParseLine()
                 self.thenReturnTokenTypes([operator])
     
     def test_symbols(self):
-        for symbol in Symbol:
+        for token_type in TokenType:
+            if not token_type.name.startswith('SYMBOL_'):
+                continue
+            symbol = token_type
             with self.subTest('test symbol {}'.format(symbol.name)):
                 self.givenProgramLine(symbol.sequence)
                 self.whenLexParseLine()
                 self.thenReturnTokenTypes([symbol])
 
     def test_keywords(self):
-        for keyword in Keyword:
+        for token_type in TokenType:
+            if not token_type.name.startswith('KEYWORD_'):
+                continue
+            keyword = token_type
             with self.subTest('test keyword {}'.format(keyword.name)):
                 self.givenProgramLine(keyword.sequence)
                 self.whenLexParseLine()
                 self.thenReturnTokenTypes([keyword])
 
     def test_whitespace(self):
-        for whitespace in Whitespace:
+        for token_type in TokenType:
+            if not token_type.name.startswith('WHITESPACE_'):
+                continue
+            whitespace = token_type
             with self.subTest('test whitespace {}'.format(whitespace.name)):
                 self.givenProgramLine(whitespace.sequence)
                 self.whenLexParseLine()

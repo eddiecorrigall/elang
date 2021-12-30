@@ -10,11 +10,10 @@ class Token(NamedTuple):
 
 
 class TokenType(Enum):
-    def __new__(cls, label: str, pattern: str, sequence: str=None) -> Any:
+    def __new__(cls, pattern: str, sequence: str=None) -> Any:
         value = len(cls.__members__) + 1
         obj = object.__new__(cls)
         obj._value_ = value
-        obj.label = label
         obj.pattern = pattern
         obj.sequence = sequence
         return obj
@@ -24,66 +23,68 @@ class TokenType(Enum):
             return '<{}>'.format(self.label)
         else:
             return '<{}: [{}]>'.format(self.label, self.pattern)
+    
+    @property
+    def label(self):
+        return self.name
+
+    LITERAL_INT = r'([0-9]+)(?![a-zA-Z])'
+    LITERAL_CHAR = r"'([^'\n]|\\n|\\\\)'"
+    LITERAL_STR = r'"([^"\n]*)"'
+
+    IDENTIFIER = r'([_a-zA-Z][_a-zA-Z0-9]*)'
+    
+    OPERATOR_MULTIPLY = (r'\*', '*')
+    OPERATOR_DIVIDE = (r'/', '/')
+    OPERATOR_MOD = (r'%', '%')
+    OPERATOR_ADD = (r'\+', '+')
+    OPERATOR_SUBTRACT = (r'\-', '-')
+    OPERATOR_LESS_OR_EQUAL = (r'<=', '<=')
+    OPERATOR_LESS = (r'<', '<')
+    OPERATOR_GREATER_OR_EQUAL = (r'>=', '>=')
+    OPERATOR_GREATER = (r'>', '>')
+    OPERATOR_EQUAL = (r'==', '==')
+    OPERATOR_NOT_EQUAL = (r'!=', '!=')
+    OPERATOR_NOT = (r'!', '!')
+    OPERATOR_ASSIGN = (r'=', '=')
+    OPERATOR_AND = (r'&&', '&&')
+    OPERATOR_OR = (r'\|\|', '||')
+    
+    SYMBOL_OPEN_PARENTHESIS = (r'\(', '(')
+    SYMBOL_CLOSE_PARENTHESIS = (r'\)', ')')
+    SYMBOL_OPEN_BRACE = (r'{', '{')
+    SYMBOL_CLOSE_BRACE = (r'}', '}')
+    SYMBOL_SEMICOLON = (r';', ';')
+    SYMBOL_COMMA = (r',', ',')
+
+    KEYWORD_IF = (r'if', 'if')
+    KEYWORD_ELSE = (r'else', 'else')
+    KEYWORD_WHILE = (r'while', 'while')
+    KEYWORD_PRINT_CHARACTER = (r'putc', 'putc')
+    KEYWORD_PRINT_STRING = (r'print', 'print')
+
+    WHITESPACE_NEWLINE = (r'\n', '\n')
+    WHITESPACE_SPACE = (r' ', ' ')
+    WHITESPACE_TAB = (r'\t', '\t')
+
+    COMMENT_LINE = r'//(.*)'
+    
+    MISMATCH = r'.'
+    
+    TERMINAL = None
 
 
-class Literal(TokenType):
-    INT = ('Literal_integer', r'([0-9]+)(?![a-zA-Z])')
-    CHAR = ('Literal_character', r"'([^'\n]|\\n|\\\\)'")
-    STR = ('Literal_string', r'"([^"\n]*)"')
+def get_token_type_by_prefix(prefix: str):
+    # Note: Preserve order
+    return list([
+        token_type
+        for token_type in TokenType
+        if token_type.name.startswith(prefix)
+    ])
 
 
-class Identifier(TokenType):
-    IDENTIFIER = ('Identifier', r'([_a-zA-Z][_a-zA-Z0-9]*)')
-
-
-class Operator(TokenType):
-    MULTIPLY = ('Operator_multiply', r'\*', '*')
-    DIVIDE = ('Operator_divide', r'/', '/')
-    MOD = ('Operator_mod', r'%', '%')
-    ADD = ('Operator_add', r'\+', '+')
-    SUBTRACT = ('Operator_subtract', r'\-', '-')
-    LESS_OR_EQUAL = ('Operator_lessequal', r'<=', '<=')
-    LESS = ('Operator_less', r'<', '<')
-    GREATER_OR_EQUAL = ('Operator_greaterequal', r'>=', '>=')
-    GREATER = ('Operator_greater', r'>', '>')
-    EQUAL = ('Operator_equal', r'==', '==')
-    NOT_EQUAL = ('Operator_notequal', r'!=', '!=')
-    NOT = ('Operator_not', r'!', '!')
-    ASSIGN = ('Operator_assign', r'=', '=')
-    AND = ('Operator_and', r'&&', '&&')
-    OR = ('Operator_or', r'\|\|', '||')
-
-
-class Symbol(TokenType):
-    OPEN_PARENTHESIS = ('Symbol_openparenthesis', r'\(', '(')
-    CLOSE_PARENTHESIS = ('Symbol_closeparenthesis', r'\)', ')')
-    OPEN_BRACE = ('Symbol_openbrace', r'{', '{')
-    CLOSE_BRACE = ('Symbol_closebrace', r'}', '}')
-    SEMICOLON = ('Symbol_semicolon', r';', ';')
-    COMMA = ('Symbol_comma', r',', ',')
-
-
-class Keyword(TokenType):
-    IF = ('Keyword_if', r'if', 'if')
-    ELSE = ('Keyword_else', r'else', 'else')
-    WHILE = ('Keyword_while', r'while', 'while')
-    PRINT_CHARACTER = ('Keyword_putc', r'putc', 'putc')
-    PRINT_STRING = ('Keyword_print', r'print', 'print')
-
-
-class Whitespace(TokenType):
-    NEWLINE = ('Whitespace_newline', r'\n', '\n')
-    SPACE = ('Whitespace_space', r' ', ' ')
-    TAB = ('Whitespace_tab', r'\t', '\t')
-
-
-class Comment(TokenType):
-    LINE = ('Comment_line', r'//(.*)')
-
-
-class Mismatch(TokenType):
-    MISMATCH = ('Mismatch',  r'.')
-
-
-class Terminal(TokenType):
-    TERMINAL = ('Terminal', None)
+LITERALS = get_token_type_by_prefix('LITERAL_')
+OPERATORS = get_token_type_by_prefix('OPERATOR_')
+SYMBOLS = get_token_type_by_prefix('SYMBOL_')
+KEYWORDS = get_token_type_by_prefix('KEYWORD_')
+WHITESPACE = get_token_type_by_prefix('WHITESPACE_')
