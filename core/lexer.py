@@ -19,13 +19,15 @@ class Lexer:
     def __init__(self) -> None:
         # Note: order matters for enum class and enum
         match_token_types = []
+        # Highest match priority
         match_token_types.append(TokenType.COMMENT_LINE)
         match_token_types.extend(WHITESPACE_TOKEN_TYPES)
         match_token_types.extend(OPERATOR_TOKEN_TYPES)
         match_token_types.extend(SYMBOL_TOKEN_TYPES)
-        match_token_types.append(TokenType.IDENTIFIER)
         match_token_types.extend(LITERAL_TOKEN_TYPES)
+        match_token_types.append(TokenType.IDENTIFIER)
         match_token_types.append(TokenType.MISMATCH)
+        # Lowest match priority
 
         self.regex = '|'.join([
             self.get_regex_pair(token_type)
