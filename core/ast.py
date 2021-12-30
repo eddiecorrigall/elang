@@ -27,6 +27,7 @@ NodeType = Enum('NodeType', [
     'ASSIGN',
     'INT',
     'STR',
+    'ARY',
     'WHILE',
     'IF',
     'ELSE',

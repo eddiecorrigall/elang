@@ -107,6 +107,11 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
 
 ## TODO
 
+- [x] implement array
+- [x] print statement with multiple arguments
+- [ ] handle print string escape characters
+- [ ] assert statement throws error and causes walker to exist with non-zero status code
+
 - test `putc('');` => error
 - test `putc('x');` => 'x'
 - test `putc(120);` => 'x'
@@ -114,3 +119,5 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
 - test `print("x");` => 'x'
 - test `print('x');` => '120'
 - test `print(120);` => '120'
+- test `print(["Hello", " ", "world", ]);` => 'Hello world'
+- test `print([["Hello", " ", "wolrd",]]);` => 'Hello world'

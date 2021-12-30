@@ -3,3 +3,4 @@
 putc('a');
 putc('b');
 putc(99);
+putc('\n');

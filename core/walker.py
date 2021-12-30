@@ -43,6 +43,20 @@ class Walker:
                 'value {}'.format(node.value),
             ]))
 
+    def print_str(self, value: str) -> None:
+        print(value, end=str())
+
+    def print(self, value: Any) -> None:
+        if type(value) is int:
+            self.print_str(str(value))
+        elif type(value) is str:
+            self.print_str(value)
+        elif type(value) is list:
+            for item in value:
+                self.print(item)
+        else:
+            self.fail('cannot print unknown value type')
+
     def walk(self, node: Node) -> Any:
         # TODO: Convert to non-recursive
         if node is None:
@@ -54,6 +68,14 @@ class Walker:
             return node.value
         elif node.type is NodeType.INT:
             return int(node.value)
+        elif node.type is NodeType.ARY:
+            array = []
+            right_value = self.walk(node.right)
+            if right_value is not None:
+                array.extend(right_value)
+            left_value = self.walk(node.left)
+            array.append(left_value)
+            return array
         elif node.type is NodeType.IDENTIFIER:
             name = node.value
             if name in self.data:
@@ -89,6 +111,6 @@ class Walker:
         elif node.type is NodeType.PRINT_STRING:
             # TODO: handle escaped characters
             value = self.walk(node.left)
-            print(value)
+            self.print(value)
         else:
             self.fail('unknown node type', node)

@@ -12,10 +12,8 @@ while (< n limit) {
         k= + k 2;
     }
     if (p) {
-        // print(n, " is prime\n");
-        print(n); print(" is prime");
+        print([n, " is prime\n", ]);
         count = + count 1;
     }
 }
-// print("Total primes found: ", count, "\n");
-print("Total primes found:"); print(count);
+print(["Total primes found: ", count, "\n", ]);

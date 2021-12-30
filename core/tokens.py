@@ -50,6 +50,8 @@ class TokenType(Enum):
     SYMBOL_CLOSE_PARENTHESIS = (r'\)', ')')
     SYMBOL_OPEN_BRACE = (r'{', '{')
     SYMBOL_CLOSE_BRACE = (r'}', '}')
+    SYMBOL_OPEN_SQUARE_BRACKET = (r'\[', '[')
+    SYMBOL_CLOSE_SQUARE_BRACKET = (r'\]', ']')
     SYMBOL_SEMICOLON = (r';', ';')
     SYMBOL_COMMA = (r',', ',')
 

@@ -10,4 +10,4 @@ while (< i n) {
     b = w;
     i = + i 1;
 }
-print(w);
+print([w, "\n", ]);

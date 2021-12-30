@@ -76,6 +76,21 @@ class Parser:
         string = self.make_leaf(NodeType.STR, value)
         return string
 
+    def parse_array(self) -> Node:
+        '''
+        array = "[" { expression "," } "]" ";" ;
+        '''
+        self.expect(TokenType.SYMBOL_OPEN_SQUARE_BRACKET)
+        array = None
+        while not self.accept(TokenType.TERMINAL):
+            if self.accept(TokenType.SYMBOL_CLOSE_SQUARE_BRACKET):
+                break
+            expression = self.parse_expression()
+            self.expect(TokenType.SYMBOL_COMMA)
+            array = self.make_node(NodeType.ARY, expression, array)
+        self.expect(TokenType.SYMBOL_CLOSE_SQUARE_BRACKET)
+        return array
+
     def parse_expression_binary(self):
         '''
         expression_binary = | ( "+" "-" "*" "/" "%" "<" | "<=" | ">" | ">=" )
@@ -131,6 +146,7 @@ class Parser:
                    | integer
                    | string
                    | identifier
+                   | array
                    | expression_not
                    | expression_binary
                    ;
@@ -143,6 +159,8 @@ class Parser:
             return self.parse_string()
         elif self.accept(TokenType.IDENTIFIER):
             return self.parse_identifier()
+        elif self.accept(TokenType.SYMBOL_OPEN_SQUARE_BRACKET):
+            return self.parse_array()
         elif self.accept(TokenType.OPERATOR_NOT):
             return self.parse_expression_not()
         else:
@@ -202,7 +220,7 @@ class Parser:
         print_character = self.make_node(NodeType.PRINT_CHARACTER, expression_parenthesis)
         self.expect(TokenType.SYMBOL_SEMICOLON)
         return print_character
-    
+
     def parse_print_string(self) -> Node:
         '''
         print_string = "print" expression_parenthesis ";" ;
