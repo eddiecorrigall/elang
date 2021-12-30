@@ -1,5 +1,8 @@
 from core import readlines
-from core.tokens import KEYWORDS, LITERALS, OPERATORS, SYMBOLS, WHITESPACE, Token, TokenType
+from core.tokens import (
+    KEYWORDS_BY_SEQUENCE, LITERAL_TOKEN_TYPES, OPERATOR_TOKEN_TYPES,
+    SYMBOL_TOKEN_TYPES, WHITESPACE_TOKEN_TYPES, WHITESPACES_BY_NAME,
+    Token, TokenType)
 from core.errors import LexerSyntaxError
 
 import re
@@ -15,20 +18,18 @@ class Lexer:
 
     def __init__(self) -> None:
         # Note: order matters for enum class and enum
-        token_types = []
-        token_types.append(TokenType.COMMENT_LINE)
-        token_types.extend(WHITESPACE)
-        token_types.extend(OPERATORS)
-        token_types.extend(SYMBOLS)
-        token_types.append(TokenType.IDENTIFIER)
-        token_types.extend(LITERALS)
-        token_types.append(TokenType.MISMATCH)
+        match_token_types = []
+        match_token_types.append(TokenType.COMMENT_LINE)
+        match_token_types.extend(WHITESPACE_TOKEN_TYPES)
+        match_token_types.extend(OPERATOR_TOKEN_TYPES)
+        match_token_types.extend(SYMBOL_TOKEN_TYPES)
+        match_token_types.append(TokenType.IDENTIFIER)
+        match_token_types.extend(LITERAL_TOKEN_TYPES)
+        match_token_types.append(TokenType.MISMATCH)
 
-        self.regex = '|'.join([self.get_regex_pair(token) for token in token_types])
-
-        self.keyword_lookup = dict([
-            (keyword.sequence, keyword)
-            for keyword in KEYWORDS
+        self.regex = '|'.join([
+            self.get_regex_pair(token_type)
+            for token_type in match_token_types
         ])
 
     def __call__(self, line: str) -> Iterator[Token]:
@@ -72,7 +73,6 @@ class Lexer:
         return self.from_program_lines(readlines(file))
 
     def from_program_line(self, line: str, row: int) -> Iterator[Token]:
-        WHITESPACE_LABELS = frozenset(map(lambda token_type: token_type.name, WHITESPACE))
         for mo in re.finditer(self.regex, line):
             token_label = mo.lastgroup
 
@@ -89,7 +89,7 @@ class Lexer:
 
             if token_label == TokenType.COMMENT_LINE.name:
                 continue
-            elif token_label in WHITESPACE_LABELS:
+            elif token_label in WHITESPACES_BY_NAME:
                 continue
             elif token_label == TokenType.LITERAL_CHAR.name:
                 if token_value == '\\n':
@@ -102,11 +102,11 @@ class Lexer:
                     raise LexerSyntaxError(
                         'invalid character literal on line {} at character {} - <<<{}>>>'.format(
                             row, column, line))
-                token_label = TokenType.LITERAL_INT.label
-            elif token_label == TokenType.IDENTIFIER.label:
-                if token_value in self.keyword_lookup:
+                token_label = TokenType.LITERAL_INT.name
+            elif token_label == TokenType.IDENTIFIER.name:
+                if token_value in KEYWORDS_BY_SEQUENCE:
                     # Identifier matches an existing keyword
-                    token_label = self.keyword_lookup[token_value].label
+                    token_label = KEYWORDS_BY_SEQUENCE[token_value].name
                     token_value = None
             elif token_label == TokenType.MISMATCH.name:
                 raise LexerSyntaxError(

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, NamedTuple
+from typing import Any, Dict, Iterable, NamedTuple
 
 
 class Token(NamedTuple):
@@ -74,7 +74,7 @@ class TokenType(Enum):
     TERMINAL = None
 
 
-def get_token_type_by_prefix(prefix: str):
+def get_token_type_by_prefix(prefix: str) -> Iterable[TokenType]:
     # Note: Preserve order
     return list([
         token_type
@@ -82,9 +82,25 @@ def get_token_type_by_prefix(prefix: str):
         if token_type.name.startswith(prefix)
     ])
 
+LITERAL_TOKEN_TYPES = get_token_type_by_prefix('LITERAL_')
+OPERATOR_TOKEN_TYPES = get_token_type_by_prefix('OPERATOR_')
+SYMBOL_TOKEN_TYPES = get_token_type_by_prefix('SYMBOL_')
+KEYWORD_TOKEN_TYPES = get_token_type_by_prefix('KEYWORD_')
+WHITESPACE_TOKEN_TYPES = get_token_type_by_prefix('WHITESPACE_')
 
-LITERALS = get_token_type_by_prefix('LITERAL_')
-OPERATORS = get_token_type_by_prefix('OPERATOR_')
-SYMBOLS = get_token_type_by_prefix('SYMBOL_')
-KEYWORDS = get_token_type_by_prefix('KEYWORD_')
-WHITESPACE = get_token_type_by_prefix('WHITESPACE_')
+def get_token_type_by_name(token_types: Iterable[TokenType]) -> Dict[str, TokenType]:
+    return dict([
+        (token_type.name, token_type)
+        for token_type in token_types
+    ])
+
+WHITESPACES_BY_NAME = get_token_type_by_name(WHITESPACE_TOKEN_TYPES)
+
+def get_token_type_by_sequence(token_types: Iterable[TokenType]) -> Dict[str, TokenType]:
+    return dict([
+        (token_type.sequence, token_type)
+        for token_type in token_types
+        if token_type.sequence
+    ])
+
+KEYWORDS_BY_SEQUENCE = get_token_type_by_sequence(KEYWORD_TOKEN_TYPES)
