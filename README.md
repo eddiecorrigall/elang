@@ -35,24 +35,29 @@ elang test
 deactivate
 ```
 
-### Demo
+### Example
+
+Produce Abstract Syntax Tree as standard output in JSON format.
 
 ```bash
-echo 'putc(123);' | elang lex | elang parse --format json
-```
-
-Produces Abstract Syntax Tree as standard output:
-```
+$ echo 'print("Hello world");' | elang lex | elang parse --format json
 {
   "type": "Sequence",
   "left": {
-    "type": "Print_character",
+    "type": "Print_string",
     "left": {
-      "type": "Integer",
-      "value": "123"
+      "type": "String",
+      "value": "\"Hello world\""
     }
   }
 }
+```
+
+Run program.
+
+```bash
+$ echo 'print("Hello world");' | elang run
+Hello world
 ```
 
 ## Python API
