@@ -39,8 +39,8 @@ class LexerTestBase(unittest.TestCase):
     def thenReturnTokenTypes(self, expected_tokens: List[TokenType]):
         self.thenReturnIterableTokens()
         self.assertEqual(
-            [expected_token.label for expected_token in expected_tokens],
-            [lexer_output.label for lexer_output in self.output])
+            [expected_token.name for expected_token in expected_tokens],
+            [lexer_output.name for lexer_output in self.output])
 
     def thenReturnValues(self, expected_values: List[str]):
         self.thenReturnIterableTokens()

@@ -19,7 +19,7 @@ class Parser:
     
     @property
     def token_label(self) -> str:
-        return self.token and self.token.label
+        return self.token and self.token.name
     
     def __init__(self) -> None:
         self.tokens = None
@@ -43,7 +43,7 @@ class Parser:
         self.token = next(self.tokens)
 
     def accept(self, token: TokenType) -> bool:
-        return self.token_label == token.label
+        return self.token_label == token.name
 
     def expect(self, token: TokenType) -> str:
         if self.accept(token):
@@ -51,7 +51,7 @@ class Parser:
             self.next_token()
             return value
         else:
-            self.fail('expected token {}'.format(token.label))
+            self.fail('expected token {}'.format(token.name))
 
     def make_leaf(self, type: NodeType, value: str) -> Node:
         return Node(type=type, value=value)

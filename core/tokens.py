@@ -5,7 +5,7 @@ from typing import Any, Dict, Iterable, NamedTuple
 class Token(NamedTuple):
     row: int
     column: int
-    label: str
+    name: str
     value: str
 
 
@@ -20,13 +20,9 @@ class TokenType(Enum):
 
     def __repr__(self):
         if self.pattern is None:
-            return '<{}>'.format(self.label)
+            return '<{}>'.format(self.name)
         else:
-            return '<{}: [{}]>'.format(self.label, self.pattern)
-    
-    @property
-    def label(self):
-        return self.name
+            return '<{}: [{}]>'.format(self.name, self.pattern)
 
     LITERAL_INT = r'([0-9]+)(?![a-zA-Z])'
     LITERAL_CHAR = r"'([^'\n]|\\n|\\\\)'"
