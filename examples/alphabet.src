@@ -1,9 +1,8 @@
 // Print alphabet
 
-A = 'A'; // ASCII value for 'A'
 offset = 0;
 while (< offset 26) { // Loop until offset is 25
-    putc(+ A offset);
+    putc(+ 'A' offset);
     offset = + offset 1; // Add one to offset
 }
 putc('\n');

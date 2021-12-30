@@ -1,3 +1,6 @@
+num = 4;
+is_even = ! % num 2;
+
 if (is_even)
     putc(0);
 else

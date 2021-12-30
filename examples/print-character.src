@@ -1,1 +1,5 @@
-putc(123);
+// prints: abc
+
+putc('a');
+putc('b');
+putc(99);
