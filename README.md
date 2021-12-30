@@ -1,3 +1,15 @@
+elang
+=====
+
+Toy programming language written by yours truely.
+- Purely Python with standard library
+- Parser: recursive descent
+- Expressions in polish notation
+- Abstract Syntax Tree Walker
+- Literals: integer, character, and string
+
+![Mandlebrot Demo](./demo.gif)
+
 ## Use CLI
 
 ```bash
