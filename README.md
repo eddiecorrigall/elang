@@ -42,11 +42,11 @@ Produce Abstract Syntax Tree as standard output in JSON format.
 ```bash
 $ echo 'print("Hello world");' | elang lex | elang parse --format json
 {
-  "type": "Sequence",
+  "type": "SEQUENCE",
   "left": {
-    "type": "Print_string",
+    "type": "PRINT_STRING",
     "left": {
-      "type": "String",
+      "type": "STR",
       "value": "\"Hello world\""
     }
   }
