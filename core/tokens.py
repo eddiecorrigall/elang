@@ -41,10 +41,10 @@ class TokenType(Enum):
     OPERATOR_GREATER = (r'>', '>')
     OPERATOR_EQUAL = (r'==', '==')
     OPERATOR_NOT_EQUAL = (r'!=', '!=')
-    OPERATOR_NOT = (r'!', '!')
+    OPERATOR_NOT = (r'not', 'not')
     OPERATOR_ASSIGN = (r'=', '=')
-    OPERATOR_AND = (r'&&', '&&')
-    OPERATOR_OR = (r'\|\|', '||')
+    OPERATOR_AND = (r'and', 'and')
+    OPERATOR_OR = (r'or', 'or')
     
     SYMBOL_OPEN_PARENTHESIS = (r'\(', '(')
     SYMBOL_CLOSE_PARENTHESIS = (r'\)', ')')

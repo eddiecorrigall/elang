@@ -1,5 +1,5 @@
 num = 4;
-is_even = ! % num 2;
+is_even = not % num 2;
 
 if (is_even)
     putc(0);
