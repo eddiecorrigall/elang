@@ -3,6 +3,28 @@ from typing import Any, Optional
 from core.ast import Node, NodeType
 
 
+BINARY_OPERATORS = dict([
+    (NodeType.ADD, lambda a, b: a + b),
+    (NodeType.SUBTRACT, lambda a, b: a - b),
+    (NodeType.MULTIPLY, lambda a, b: a * b),
+    (NodeType.DIVIDE, lambda a, b: a // b),
+    (NodeType.MOD, lambda a, b: a % b),
+    (NodeType.EQUAL, lambda a, b: a == b),
+    (NodeType.NOT_EQUAL, lambda a, b: a != b),
+    (NodeType.LESS_THAN, lambda a, b: a < b),
+    (NodeType.LESS_THAN_OR_EQUAL, lambda a, b: a <= b),
+    (NodeType.GREATER_THAN, lambda a, b: a > b),
+    (NodeType.GREATER_THAN_OR_EQUAL, lambda a, b: a >= b),
+    (NodeType.AND, lambda a, b: a and b),
+    (NodeType.OR, lambda a, b: a or b),
+])
+
+
+UNARY_OPERATORS = dict([
+    (NodeType.NOT, lambda x: 0 if x else 1)
+])
+
+
 class Walker:
     def __init__(self):
         self.data = dict()
@@ -43,34 +65,14 @@ class Walker:
             value = self.walk(node.right)
             self.data[name] = value
             return value
-        elif node.type is NodeType.ADD:
-            return self.walk(node.left) + self.walk(node.right)
-        elif node.type is NodeType.SUBTRACT:
-            return self.walk(node.left) - self.walk(node.right)
-        elif node.type is NodeType.MULTIPLY:
-            return self.walk(node.left) * self.walk(node.right)
-        elif node.type is NodeType.DIVIDE:
-            return self.walk(node.left) / self.walk(node.right)
-        elif node.type is NodeType.MOD:
-            return self.walk(node.left) % self.walk(node.right)
-        elif node.type is NodeType.EQUAL:
-            return self.walk(node.left) == self.walk(node.right)
-        elif node.type is NodeType.NOT_EQUAL:
-            return self.walk(node.left) != self.walk(node.right)
-        elif node.type is NodeType.LESS_THAN:
-            return self.walk(node.left) < self.walk(node.right)
-        elif node.type is NodeType.LESS_THAN_OR_EQUAL:
-            return self.walk(node.left) <= self.walk(node.right)
-        elif node.type is NodeType.GREATER_THAN:
-            return self.walk(node.left) > self.walk(node.right)
-        elif node.type is NodeType.GREATER_THAN_OR_EQUAL:
-            return self.walk(node.left) >= self.walk(node.right)
-        elif node.type is NodeType.AND:
-            return self.walk(node.left) and self.walk(node.right)
-        elif node.type is NodeType.OR:
-            return self.walk(node.left) or self.walk(node.right)
-        elif node.type is NodeType.NOT:
-            return 0 if self.walk(node.left) else 1
+        elif node.type in BINARY_OPERATORS:
+            operation = BINARY_OPERATORS[node.type]
+            return operation(
+                self.walk(node.left),
+                self.walk(node.right))
+        elif node.type in UNARY_OPERATORS:
+            operation = UNARY_OPERATORS[node.type]
+            return operation(self.walk(node.left))
         elif node.type is NodeType.IF:
             if self.walk(node.left):
                 self.walk(node.right.left)

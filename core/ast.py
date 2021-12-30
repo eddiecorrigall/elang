@@ -6,55 +6,51 @@ from enum import Enum
 from typing import Any, Iterable, Optional
 
 
-class NodeType(Enum):
-    def __new__(cls, label: str, is_leaf = False) -> Any:
-        value = len(cls.__members__) + 1
-        obj = object.__new__(cls)
-        obj._value_ = value
-        obj.label = label
-        obj.is_leaf = is_leaf
-        return obj
-    
-    def __repr__(self):
-        return '<{class_name} {label}>'.format(
-            class_name=self.__class__.__name__,
-            label=self.label)
-    
-    SEQUENCE = ('Sequence', )
-    EXPRESSION = ('Expression', )
-    ADD = ('Add', )
-    SUBTRACT = ('Subtract', )
-    MULTIPLY = ('Multiply', )
-    DIVIDE = ('Divide', )
-    MOD = ('Mod', )
-    EQUAL = ('Equal', )
-    NOT_EQUAL = ('NotEqual', )
-    LESS_THAN = ('LessThan', )
-    LESS_THAN_OR_EQUAL = ('LessThanOrEqual', )
-    GREATER_THAN = ('GreaterThan', )
-    GREATER_THAN_OR_EQUAL = ('GreaterThanEqual', ),
-    AND = ('And,' )
-    OR = ('Or', )
-    NOT = ('Not', )
-    IDENTIFIER = ('Identifier', True)
-    ASSIGN = ('Assign', )
-    INT = ('Integer', True)
-    STR = ('String', True)
-    WHILE = ('While', )
-    IF = ('If', )
-    ELSE = ('Else', )
-    PRINT_CHARACTER = ('Print_character', )
-    PRINT_STRING = ('Print_string', )
+
+NodeType = Enum('NodeType', [
+    'SEQUENCE',
+    'EXPRESSION',
+    'ADD',
+    'SUBTRACT',
+    'MULTIPLY',
+    'DIVIDE',
+    'MOD',
+    'EQUAL',
+    'NOT_EQUAL',
+    'LESS_THAN',
+    'LESS_THAN_OR_EQUAL',
+    'GREATER_THAN',
+    'GREATER_THAN_OR_EQUAL',
+    'AND',
+    'OR',
+    'NOT',
+    'IDENTIFIER',
+    'ASSIGN',
+    'INT',
+    'STR',
+    'WHILE',
+    'IF',
+    'ELSE',
+    'PRINT_CHARACTER',
+    'PRINT_STRING',
+])
+
+
+LEAF_NODE_TYPES = frozenset([
+    NodeType.IDENTIFIER,
+    NodeType.INT,
+    NodeType.STR,
+])
 
 
 class Node:
     @property
     def is_leaf(self) -> bool:
-        return self.type.is_leaf
+        return self.type in LEAF_NODE_TYPES
     
     @property
     def label(self) -> str:
-        return self.type.label
+        return self.type.name
 
     def __init__(
             self,
@@ -69,7 +65,7 @@ class Node:
 
     def as_dict(self) -> dict:
         # Recursive traversal
-        result = dict(type=self.type.label)
+        result = dict(type=self.label)
         if self.value:
             result['value'] = self.value
         if self.left:
@@ -112,4 +108,4 @@ class Node:
     def __repr__(self) -> str:
         return '<{class_name} {type}>'.format(
             class_name=self.__class__.__name__,
-            type=self.type.label)
+            type=self.label)

@@ -20,7 +20,7 @@ class TestParserStatementSemicolon(ParserTestBase):
         ))
         self.whenNodeAsLines()
         self.thenReturnLines([
-            NodeType.SEQUENCE.label,
+            NodeType.SEQUENCE.name,
             ';',
             ';',
         ])
@@ -111,9 +111,9 @@ class TestParserStatementPrintCharacter(ParserTestBase):
         ))
         self.whenNodeAsLines()
         self.thenReturnLines([
-            NodeType.SEQUENCE.label,
-            NodeType.PRINT_CHARACTER.label,
-            NodeType.INT.label + '\t' + '123',
+            NodeType.SEQUENCE.name,
+            NodeType.PRINT_CHARACTER.name,
+            NodeType.INT.name + '\t' + '123',
             ';',
             ';',
         ])
