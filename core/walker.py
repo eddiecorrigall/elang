@@ -39,7 +39,7 @@ class Walker:
         else:
             raise Exception(' - ' .join([
                 message,
-                'label {}'.format(node.label),
+                'name {}'.format(node.type.name),
                 'value {}'.format(node.value),
             ]))
 
