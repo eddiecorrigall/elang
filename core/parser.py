@@ -140,12 +140,23 @@ class Parser:
         expression = self.parse_expression()
         return self.make_node(NodeType.NOT, expression)
 
+    def parse_identifier_index(self) -> Node:
+        '''
+        identifier_index = identifier { "@" expression } ;
+        '''
+        identifier = self.parse_identifier()
+        if self.accept(TokenType.OPERATOR_AT):
+            self.next_token()  # Consume operator
+            index = self.parse_expression()
+            identifier = self.make_node(NodeType.IDENTIFIER_INDEX, identifier, index)
+        return identifier
+
     def parse_expression(self) -> Node:
         '''
         expression = expression_parenthesis
                    | integer
                    | string
-                   | identifier [ "@" expression ]
+                   | identifier_index
                    | array
                    | expression_not
                    | expression_binary
@@ -158,13 +169,7 @@ class Parser:
         elif self.accept(TokenType.LITERAL_STR):
             return self.parse_string()
         elif self.accept(TokenType.IDENTIFIER):
-            identifier = self.parse_identifier()
-            if self.accept(TokenType.OPERATOR_AT):
-                self.next_token()  # Consume operator
-                index = self.parse_expression()
-                return self.make_node(NodeType.IDENTIFIER_INDEX, identifier, index)
-            else:
-                return identifier
+            return self.parse_identifier_index()
         elif self.accept(TokenType.SYMBOL_OPEN_SQUARE_BRACKET):
             return self.parse_array()
         elif self.accept(TokenType.OPERATOR_NOT):
@@ -183,9 +188,9 @@ class Parser:
 
     def parse_assignment(self) -> Node:
         '''
-        assignment = identifier "=" expression ";" ;
+        assignment = identifier_index "=" expression ";" ;
         '''
-        identifier = self.parse_identifier()
+        identifier = self.parse_identifier_index()
         self.expect(TokenType.OPERATOR_ASSIGN)
         expression = self.parse_expression()
         assignment = self.make_node(NodeType.ASSIGN, identifier, expression)

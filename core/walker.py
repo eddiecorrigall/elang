@@ -84,9 +84,14 @@ class Walker:
             else:
                 self.fail('variable referenced before assignment', node)
         elif node.type is NodeType.ASSIGN:
-            name = node.left.value
-            value = self.walk(node.right)
-            self.data[name] = value
+            value = self.walk(node.right)  # expression
+            if node.left.type is NodeType.IDENTIFIER_INDEX:
+                name = node.left.left.value  # identifier
+                index = self.walk(node.left.right)  # expression
+                self.data[name][index] = value
+            else:
+                name = node.left.value  # identifier
+                self.data[name] = value
             return value
         elif node.type in BINARY_OPERATORS:
             operation = BINARY_OPERATORS[node.type]
