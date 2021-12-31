@@ -1,0 +1,31 @@
+// Find a record
+
+records = [
+    ["Jimi", "Hendrix", ], // 0
+    ["Jimmy", "Page", ],   // 1
+    ["Eric", "Cartman", ], // 2
+    ["Eric", "Clapton", ], // 3
+    ["Joni", "Michell", ], // 4
+];
+
+firstname_criteria = "Eric";
+lastname_criteria = "Clapton";
+
+found = 0;
+index = 0;
+while (and < index 5 not found) {
+    fullname = records @ index;
+    firstname = fullname @ 0;
+    lastname = fullname @ 1;
+    if (and == firstname firstname_criteria == lastname lastname_criteria) {
+        found = 1;
+    } else {
+        index = + index 1;
+    }
+}
+
+if (found) {
+    print(["Found ", firstname, " ", lastname, " at position ", index, "\n", ]);
+} else {
+    print("Record not found\n");
+}

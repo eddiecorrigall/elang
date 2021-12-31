@@ -93,7 +93,7 @@ class Parser:
 
     def parse_expression_binary(self):
         '''
-        expression_binary = | ( "+" "-" "*" "/" "%" "<" | "<=" | ">" | ">=" )
+        expression_binary = | ( "+" | "-" | "*" | "/" | "%" | "<" | "<=" | ">" | ">=" | "and" | "or" )
                               expression
                               expression
                               ;
@@ -134,7 +134,7 @@ class Parser:
 
     def parse_expression_not(self) -> Node:
         '''
-        expression_not = "!" expression ;
+        expression_not = "not" expression ;
         '''
         self.expect(TokenType.OPERATOR_NOT)
         expression = self.parse_expression()
@@ -145,7 +145,7 @@ class Parser:
         expression = expression_parenthesis
                    | integer
                    | string
-                   | identifier
+                   | identifier [ "@" expression ]
                    | array
                    | expression_not
                    | expression_binary
@@ -158,7 +158,13 @@ class Parser:
         elif self.accept(TokenType.LITERAL_STR):
             return self.parse_string()
         elif self.accept(TokenType.IDENTIFIER):
-            return self.parse_identifier()
+            identifier = self.parse_identifier()
+            if self.accept(TokenType.OPERATOR_AT):
+                self.next_token()  # Consume operator
+                index = self.parse_expression()
+                return self.make_node(NodeType.IDENTIFIER_INDEX, identifier, index)
+            else:
+                return identifier
         elif self.accept(TokenType.SYMBOL_OPEN_SQUARE_BRACKET):
             return self.parse_array()
         elif self.accept(TokenType.OPERATOR_NOT):
@@ -177,7 +183,7 @@ class Parser:
 
     def parse_assignment(self) -> Node:
         '''
-        identifier "=" expression ";" ;
+        assignment = identifier "=" expression ";" ;
         '''
         identifier = self.parse_identifier()
         self.expect(TokenType.OPERATOR_ASSIGN)

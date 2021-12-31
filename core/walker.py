@@ -17,6 +17,7 @@ BINARY_OPERATORS = dict([
     (NodeType.GREATER_THAN_OR_EQUAL, lambda a, b: a >= b),
     (NodeType.AND, lambda a, b: a and b),
     (NodeType.OR, lambda a, b: a or b),
+    (NodeType.IDENTIFIER_INDEX, lambda array, index: array[index])
 ])
 
 

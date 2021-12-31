@@ -24,6 +24,7 @@ NodeType = Enum('NodeType', [
     'OR',
     'NOT',
     'IDENTIFIER',
+    'IDENTIFIER_INDEX',
     'ASSIGN',
     'INT',
     'STR',
