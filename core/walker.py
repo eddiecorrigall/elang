@@ -17,13 +17,39 @@ BINARY_OPERATORS = dict([
     (NodeType.GREATER_THAN_OR_EQUAL, lambda a, b: a >= b),
     (NodeType.AND, lambda a, b: a and b),
     (NodeType.OR, lambda a, b: a or b),
-    (NodeType.IDENTIFIER_INDEX, lambda array, index: array[index])
 ])
 
 
 UNARY_OPERATORS = dict([
     (NodeType.NOT, lambda x: 0 if x else 1)
 ])
+
+
+class IdentifierIndex:
+    def __init__(self, identifier: str) -> None:
+        self.identifier = identifier
+        self.indices = []
+
+    def __repr__(self) -> str:
+        return '<{class_name} {identifier}>'.format(
+            class_name=self.__class__.__name__,
+            identifier=self.identifier)
+
+    def get(self, table: dict) -> Any:
+        if self.identifier not in table:
+            raise Exception('variable reference before assignment')
+        item = table[self.identifier]
+        for index in self.indices:
+            item = item[index]
+        return item
+
+    def set(self, table: dict, value: Any) -> None:
+        if self.identifier not in table:
+            raise Exception('variable reference before assignment')
+        item = table[self.identifier]
+        for index in self.indices[:-1]:
+            item = item[index]
+        item[self.indices[-1]] = value
 
 
 class Walker:
@@ -55,6 +81,8 @@ class Walker:
         elif type(value) is list:
             for item in value:
                 self.print(item)
+        elif type(value) is IdentifierIndex:
+            self.print_str(value.get(self.data))
         else:
             self.fail('cannot print unknown value type')
 
@@ -83,15 +111,27 @@ class Walker:
                 return self.data[name]
             else:
                 self.fail('variable referenced before assignment', node)
+        elif node.type is NodeType.IDENTIFIER_INDEX:
+            if node.left.type is NodeType.IDENTIFIER:
+                # Leaf node: has name and index
+                name = node.left.value
+                identifier_index = IdentifierIndex(name)
+            else:
+                # Inner node: has index only
+                identifier_index = self.walk(node.left)  # identifier index
+            index = self.walk(node.right)  # expression
+            identifier_index.indices.append(index)
+            return identifier_index
         elif node.type is NodeType.ASSIGN:
             value = self.walk(node.right)  # expression
             if node.left.type is NodeType.IDENTIFIER_INDEX:
-                name = node.left.left.value  # identifier
-                index = self.walk(node.left.right)  # expression
-                self.data[name][index] = value
+                identifier_index = self.walk(node.left)
+                identifier_index.set(self.data, value)
+            elif node.left.type is NodeType.IDENTIFIER:
+                identifier = node.left.value
+                self.data[identifier] = value
             else:
-                name = node.left.value  # identifier
-                self.data[name] = value
+                self.fail('cannot assign to unknown type')
             return value
         elif node.type in BINARY_OPERATORS:
             operation = BINARY_OPERATORS[node.type]

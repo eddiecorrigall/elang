@@ -1,2 +1,4 @@
 my_ary = [1, 2, [4, ], ];
-my_ary@2 = 3;
+my_ary @ 2 @ 0 = 3;
+my_ref = my_ary @ 2 @ 0;
+print(my_ref); // 3

@@ -145,7 +145,9 @@ class Parser:
         identifier_index = identifier { "@" expression } ;
         '''
         identifier = self.parse_identifier()
-        if self.accept(TokenType.OPERATOR_AT):
+        while not self.accept(TokenType.TERMINAL):
+            if not self.accept(TokenType.OPERATOR_AT):
+                break
             self.next_token()  # Consume operator
             index = self.parse_expression()
             identifier = self.make_node(NodeType.IDENTIFIER_INDEX, identifier, index)
