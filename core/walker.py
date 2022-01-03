@@ -124,6 +124,8 @@ class Walker:
             return identifier_index
         elif node.type is NodeType.ASSIGN:
             value = self.walk(node.right)  # expression
+            if type(value) is IdentifierIndex:
+                value = value.get(self.data)
             if node.left.type is NodeType.IDENTIFIER_INDEX:
                 identifier_index = self.walk(node.left)
                 identifier_index.set(self.data, value)
