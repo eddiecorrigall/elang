@@ -1,1 +1,2 @@
 my_char = 'a';
+assert(== 97 my_char);

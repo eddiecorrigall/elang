@@ -16,4 +16,5 @@ while (< n limit) {
         count = + count 1;
     }
 }
+assert(== 51 count);
 print(["Total primes found: ", count, "\n", ]);

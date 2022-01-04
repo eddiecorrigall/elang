@@ -1,2 +1,5 @@
 xyz = 123;
 abc = xyz;
+assert(== 123 xyz);
+assert(== 123 abc);
+assert(== abc xyz);

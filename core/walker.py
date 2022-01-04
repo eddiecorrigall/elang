@@ -101,16 +101,34 @@ class Walker:
     def __call__(self, node: Node) -> Any:
         return self.walk(node)
 
-    def fail(self, message: str, node: Optional[Node] = None) -> None:
+    def fail(self, message: str, node: Optional[Node] = None, constructor = None) -> None:
+        if constructor is None:
+            constructor = lambda message: Exception(message)
         # TODO: Debugging information to assiciate node and token
         if node is None:
-            raise Exception(message)
+            raise constructor(message)
         else:
-            raise Exception(' - ' .join([
+            info = [
                 message,
-                'name {}'.format(node.type.name),
-                'value {}'.format(node.value),
-            ]))
+                'node {}'.format(node.type.name),
+            ]
+            if node.value is not None:
+                info.append('value {}'.format(node.value))
+            if node.left is not None:
+                left_value = self.walk(node.left)  # Probably trouble
+                if isinstance(left_value, IdentifierOperator):
+                    left_value = left_value.get(self.data)
+                info.append('left value {}'.format(left_value))
+            if node.right is not None:
+                right_value = self.walk(node.right)  # Probably trouble
+                if isinstance(right_value, IdentifierOperator):
+                    right_value = right_value.get(self.data)
+                info.append('right value {}'.format(right_value))
+            raise constructor(' - ' .join(info))
+
+    def assert_true(self, message: str, truthy: Any, node: Node) -> None:
+        if not truthy:
+            self.fail(message=message, node=node, constructor=AssertionError)
 
     def print_str(self, value: str) -> None:
         print(value, end=str())
@@ -172,10 +190,7 @@ class Walker:
                 key=self.walk(node.right))
         elif node.type is NodeType.ASSIGN:
             value = self.walk(node.right)  # expression
-            if type(value) is IdentifierMap:
-                # Dereference
-                value = value.get(self.data)
-            if type(value) is IdentifierArray:
+            if isinstance(value, IdentifierOperator):
                 # Dereference
                 value = value.get(self.data)
             if node.left.type is NodeType.IDENTIFIER_ARRAY:
@@ -192,9 +207,15 @@ class Walker:
             return value
         elif node.type in BINARY_OPERATORS:
             operation = BINARY_OPERATORS[node.type]
-            return operation(
-                self.walk(node.left),
-                self.walk(node.right))
+            left = self.walk(node.left)
+            if isinstance(left, IdentifierOperator):
+                # Dereference
+                left = left.get(self.data)
+            right = self.walk(node.right)
+            if isinstance(right, IdentifierOperator):
+                # Dereference
+                right = right.get(self.data)
+            return operation(left, right)
         elif node.type in UNARY_OPERATORS:
             operation = UNARY_OPERATORS[node.type]
             return operation(self.walk(node.left))
@@ -215,5 +236,12 @@ class Walker:
             # TODO: handle escaped characters
             value = self.walk(node.left)
             self.print(value)
+        elif node.type is NodeType.ASSERT:
+            expression_parenthesis = self.walk(node.left)
+            self.assert_true(
+                message='assertion failed',
+                node=node.left,
+                truthy=expression_parenthesis,
+            )
         else:
             self.fail('unknown node type', node)

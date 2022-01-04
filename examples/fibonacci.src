@@ -10,4 +10,5 @@ while (< i n) {
     b = w;
     i = + i 1;
 }
+assert(== 701408733 w);
 print([w, "\n", ]);

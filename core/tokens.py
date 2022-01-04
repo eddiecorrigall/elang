@@ -62,6 +62,7 @@ class TokenType(Enum):
     KEYWORD_WHILE = (r'while', 'while')
     KEYWORD_PRINT_CHARACTER = (r'putc', 'putc')
     KEYWORD_PRINT_STRING = (r'print', 'print')
+    KEYWORD_ASSERT = (r'assert', 'assert')
 
     WHITESPACE_NEWLINE = (r'\n', '\n')
     WHITESPACE_SPACE = (r' ', ' ')

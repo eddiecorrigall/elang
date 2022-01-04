@@ -24,8 +24,5 @@ while (and < index 5 not found) {
     }
 }
 
-if (found) {
-    print(["Found ", firstname, " ", lastname, " at position ", index, "\n", ]);
-} else {
-    print("Record not found\n");
-}
+assert(found);
+print(["Found ", firstname, " ", lastname, " at position ", index, "\n", ]);

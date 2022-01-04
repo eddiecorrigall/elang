@@ -253,6 +253,16 @@ class Parser:
         self.expect(TokenType.SYMBOL_SEMICOLON)
         return print_string
 
+    def parse_assert(self) -> Node:
+        '''
+        assert = "assert" expression_parenthesis ";" ;
+        '''
+        self.expect(TokenType.KEYWORD_ASSERT)
+        expression_parenthesis = self.parse_expression_parenthesis()
+        _assert = self.make_node(NodeType.ASSERT, expression_parenthesis)
+        self.expect(TokenType.SYMBOL_SEMICOLON)
+        return _assert        
+
     def parse_block(self) -> None:
         '''
         block = "{" { statement } "}" ;
@@ -273,6 +283,8 @@ class Parser:
                   | while
                   | if
                   | print_character
+                  | print_string
+                  | assert
                   ;
         '''
         if self.accept(TokenType.SYMBOL_OPEN_BRACE):
@@ -287,6 +299,8 @@ class Parser:
             return self.parse_print_character()
         elif self.accept(TokenType.KEYWORD_PRINT_STRING):
             return self.parse_print_string()
+        elif self.accept(TokenType.KEYWORD_ASSERT):
+            return self.parse_assert()
         else:
             self.fail('invalid statement')
 

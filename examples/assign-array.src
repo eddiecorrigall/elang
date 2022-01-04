@@ -7,6 +7,10 @@ print(my_array @ 1 @ 0); // 3
 
 my_array @ 1 @ 1 = 0; // replace bottom right cell
 my_array @ 0 = [2, 1,]; // replace top row
+
+assert(== [2, 1,] my_array @ 0);
+assert(== [3, 0,] my_array @ 1);
+
 // TODO my_array = * 2 my_array; // multiply entire array
 // TODO my_array = - 1 my_array; // subtract entire array
 

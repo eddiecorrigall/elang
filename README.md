@@ -6,7 +6,7 @@ Toy programming language written by yours truely.
 - Parser: recursive descent
 - Expressions in polish notation
 - Abstract Syntax Tree Walker
-- Literals: integer, character, string, array
+- Literals: integer, character, string, array, map
 
 ![Mandlebrot Demo](./demo.gif)
 
@@ -135,7 +135,7 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
   - [ ] typing / immutable type
 - [x] print statement with multiple arguments
 - [ ] handle print string escape characters
-- [ ] assert statement throws error and causes walker to exist with non-zero status code
+- [x] assert statement throws error and causes walker to exist with non-zero status code
 
 - test `putc('');` => error
 - test `putc('x');` => 'x'

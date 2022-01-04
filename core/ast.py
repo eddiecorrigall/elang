@@ -35,6 +35,7 @@ NodeType = Enum('NodeType', [
     'ELSE',
     'PRINT_CHARACTER',
     'PRINT_STRING',
+    'ASSERT',
 ])
 
 

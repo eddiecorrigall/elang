@@ -1,1 +1,2 @@
 my_str = "abc";
+assert(== my_str "abc");

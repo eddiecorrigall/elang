@@ -1,6 +1,8 @@
 num = 4;
 is_even = not % num 2;
 
+assert(is_even);
+
 if (is_even)
     print("even");
 else
