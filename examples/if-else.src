@@ -2,6 +2,6 @@ num = 4;
 is_even = not % num 2;
 
 if (is_even)
-    putc(0);
+    print("even");
 else
-    putc(1);
+    print("odd");

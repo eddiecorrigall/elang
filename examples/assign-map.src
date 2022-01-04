@@ -1,0 +1,8 @@
+my_map = "empty"; // assign default value
+
+my_map # ["eddie", "van halen", ] = "musician";
+my_map # ["eddie", "murphy", ] = "comedian";
+
+print(my_map # ["eddie", "murphy", ]); // comedian
+print(my_map # ["eddie", "van halen", ]); // musician
+print(my_map # ["eddie", "corrigall", ]); // empty

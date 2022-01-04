@@ -109,10 +109,19 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
 
 - [ ] boolean
 - [ ] implement static array
-  - [x] assign
+  - [x] assign single value
+  - [x] assign row
+  - [ ] binary operation (eg multiply) row
   - [x] print
-  - [x] access
-  - [ ] assign
+  - [x] access single value
+  - [x] access row
+- [ ] implement hash table
+  - [x] default value
+  - [x] assign single value
+  - [x] access single value
+  - [x] print
+  - [ ] access keys
+  - [ ] access values
 - [ ] loop
   - [x] while with condition and statement
   - [ ] halt loop

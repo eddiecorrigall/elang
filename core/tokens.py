@@ -46,6 +46,7 @@ class TokenType(Enum):
     OPERATOR_AND = (r'and', 'and')
     OPERATOR_OR = (r'or', 'or')
     OPERATOR_AT = (r'@', '@')
+    OPERATOR_HASH = (r'#', '#')
     
     SYMBOL_OPEN_PARENTHESIS = (r'\(', '(')
     SYMBOL_CLOSE_PARENTHESIS = (r'\)', ')')
