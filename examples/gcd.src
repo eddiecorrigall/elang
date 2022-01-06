@@ -1,10 +1,13 @@
-a = 1071;
-b = 1029;
- 
+input_a = 1071;
+input_b = 1029;
+
+a = input_a;
+b = input_b;
+
 while (!= b 0) {
-    new_a = b;
-    b     = % a b;
-    a     = new_a;
+    t = b;
+    b = % a b;
+    a = t;
 }
 assert(== 21 a);
-print([a, "\n", ]); // 21
+print(["GCD of ", input_a, " and ", input_b, " is ", a, "\n", ]);

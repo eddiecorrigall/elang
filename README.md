@@ -134,7 +134,7 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
   - [ ] constants / immutable value
   - [ ] typing / immutable type
 - [x] print statement with multiple arguments
-- [ ] handle print string escape characters
+- [x] handle print string escape characters
 - [x] assert statement throws error and causes walker to exist with non-zero status code
 
 - test `putc('');` => error

@@ -25,4 +25,5 @@ while (and < index 5 not found) {
 }
 
 assert(found);
+assert(== 3 index);
 print(["Found ", firstname, " ", lastname, " at position ", index, "\n", ]);

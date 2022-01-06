@@ -1,4 +1,4 @@
-from typing import Any, Iterable, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 from core.ast import Node, NodeType
 
@@ -131,6 +131,10 @@ class Walker:
             self.fail(message=message, node=node, constructor=AssertionError)
 
     def print_str(self, value: str) -> None:
+        # Replace escaped newline in string
+        value = value.replace(r'\n', '\n')
+        # Replace escaped tab in string
+        value = value.replace(r'\t', '\t')
         print(value, end=str())
 
     def print(self, value: Any) -> None:

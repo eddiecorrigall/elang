@@ -1,9 +1,12 @@
 num = 4;
+
+print(["The number ", num, " is ", ]);
+
 is_even = not % num 2;
 
 assert(is_even);
 
 if (is_even)
-    print("even");
+    print("even\n");
 else
-    print("odd");
+    print("odd\n");
