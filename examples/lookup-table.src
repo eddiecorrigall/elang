@@ -17,7 +17,7 @@ while (and < index 5 not found) {
     fullname = records @ index;
     firstname = fullname @ 0;
     lastname = fullname @ 1;
-    if (and == firstname firstname_criteria == lastname lastname_criteria) {
+    if (and (== firstname firstname_criteria) (== lastname lastname_criteria)) {
         found = 1;
     } else {
         index = + index 1;
