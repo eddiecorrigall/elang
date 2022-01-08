@@ -85,7 +85,7 @@ def run(file, show_symbol_table):
     ast = parser(tokens)
     walker(ast)
     if show_symbol_table:
-        print('\nSymbol Table:', walker.data)
+        print('\nSymbol Table:', walker.table.scope_stack)
 
 
 @cli.command()

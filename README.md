@@ -131,8 +131,11 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
   - [x] char
   - [x] string
   - [x] array
+  - [x] map
   - [ ] constants / immutable value
   - [ ] typing / immutable type
+  - [ ] variable scope
+- [ ] provide token context with AST error
 - [x] print statement with multiple arguments
 - [x] handle print string escape characters
 - [x] assert statement throws error and causes walker to exist with non-zero status code

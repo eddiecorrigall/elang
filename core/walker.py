@@ -1,20 +1,30 @@
 from typing import Any, List, Optional, Tuple, Union
 
 from core.ast import Node, NodeType
+from core.variables import Table, Variable, VariableType
+
+
+def as_int(value: Union[int, bool]) -> int:
+    return 1 if value else 0
 
 
 BINARY_OPERATORS = dict([
+    # Returns integer
     (NodeType.ADD, lambda a, b: a + b),
     (NodeType.SUBTRACT, lambda a, b: a - b),
     (NodeType.MULTIPLY, lambda a, b: a * b),
     (NodeType.DIVIDE, lambda a, b: a // b),
     (NodeType.MOD, lambda a, b: a % b),
-    (NodeType.EQUAL, lambda a, b: a == b),
-    (NodeType.NOT_EQUAL, lambda a, b: a != b),
-    (NodeType.LESS_THAN, lambda a, b: a < b),
-    (NodeType.LESS_THAN_OR_EQUAL, lambda a, b: a <= b),
-    (NodeType.GREATER_THAN, lambda a, b: a > b),
-    (NodeType.GREATER_THAN_OR_EQUAL, lambda a, b: a >= b),
+
+    # Returns 1 or 0
+    (NodeType.EQUAL, lambda a, b: as_int(a == b)),
+    (NodeType.NOT_EQUAL, lambda a, b: as_int(a != b)),
+    (NodeType.LESS_THAN, lambda a, b: as_int(a < b)),
+    (NodeType.LESS_THAN_OR_EQUAL, lambda a, b: as_int(a <= b)),
+    (NodeType.GREATER_THAN, lambda a, b: as_int(a > b)),
+    (NodeType.GREATER_THAN_OR_EQUAL, lambda a, b: as_int(a >= b)),
+
+    # Binary, but does not necessarily return int
     (NodeType.AND, lambda a, b: a and b),
     (NodeType.OR, lambda a, b: a or b),
 ])
@@ -23,6 +33,21 @@ BINARY_OPERATORS = dict([
 UNARY_OPERATORS = dict([
     (NodeType.NOT, lambda x: 0 if x else 1)
 ])
+
+
+def expect_variable(
+    table: Table,
+    name: str,
+    type: Optional[VariableType] = None,
+) -> Variable:
+    variable, _ = table.get(name)
+    if variable.is_undefined:
+        raise Exception(
+            'variable reference before assignment - {} is undefined'.format(name))
+    if type and type is not variable.type:
+        raise Exception(
+            'variable type mismatch - {} is not of type {}'.format(name, type))
+    return variable
 
 
 class IdentifierOperator:
@@ -37,18 +62,16 @@ class IdentifierArray(IdentifierOperator):
         self.identifier = identifier
         self.indices = []
     
-    def get(self, table: dict) -> Any:
-        if self.identifier not in table:
-            raise Exception('variable reference before assignment')
-        item = table[self.identifier]
+    def get(self, table: Table) -> Any:
+        variable = expect_variable(table, self.identifier, VariableType.ARRAY)
+        item = variable.value
         for index in self.indices:
             item = item[index]
         return item
 
-    def set(self, table: dict, value: Any) -> None:
-        if self.identifier not in table:
-            raise Exception('variable reference before assignment')
-        item = table[self.identifier]
+    def set(self, table: Table, value: Any) -> None:
+        variable = expect_variable(table, self.identifier, VariableType.ARRAY)
+        item = variable.value
         for index in self.indices[:-1]:
             item = item[index]
         item[self.indices[-1]] = value
@@ -72,32 +95,38 @@ class IdentifierMap(IdentifierOperator):
     def name(self):
         return self.identifier + '#'
 
-    def get(self, table: dict) -> Union[int, str, list]:
-        if self.identifier not in table:
-            raise Exception('variable reference before assignment')
-        default_value = table[self.identifier]
-        if self.key in table[self.name]:
-            return table[self.name][self.key]
-        return default_value
+    def get(self, table: Table) -> Union[int, str, list]:
+        # Default variable must be defined, and (TODO) match type of key-value pair
+        default_variable = expect_variable(table, self.identifier)
+        map_variable = expect_variable(table, self.name, VariableType.MAP)
+        if self.key in map_variable.value:
+            value = map_variable.value[self.key]
+            return value
+        return default_variable.value
 
-    def set(self, table: dict, value: Union[int, str, list]) -> None:
-        if self.name not in table:
-            table[self.name] = dict()
-        if self.identifier not in table:
+    def set(self, table: Table, value: Union[int, str, list]) -> None:
+        default_variable = expect_variable(table, self.identifier)
+        if default_variable.is_undefined:
             # Infer default value from type
             if type(value) is int:
-                table[self.identifier] = 0
+                table.set(Variable(self.identifier, VariableType.INT, 0))
             elif type(value) is str:
-                table[self.identifier] = str()
+                table.set(Variable(self.identifier, VariableType.STR, str()))
+            elif type(value) is list:
+                table.set(Variable(self.identifier, VariableType.ARRAY, list()))
             else:
                 raise Exception('unknown type of identifier key')
-        table[self.name][self.key] = value
+        map_variable, _ = table.get(self.name)
+        if map_variable.is_undefined:
+            map_variable = Variable(self.name, VariableType.MAP, dict())
+            table.set(map_variable)
+        map_variable.value[self.key] = value
 
 
 class Walker:
     def __init__(self):
-        self.data = dict()
-    
+        self.table = Table()
+
     def __call__(self, node: Node) -> Any:
         return self.walk(node)
 
@@ -116,15 +145,19 @@ class Walker:
                 info.append('value {}'.format(node.value))
             if node.left is not None:
                 left_value = self.walk(node.left)  # Probably trouble
-                if isinstance(left_value, IdentifierOperator):
-                    left_value = left_value.get(self.data)
+                left_value = self.dereference(left_value)
                 info.append('left value {}'.format(left_value))
             if node.right is not None:
                 right_value = self.walk(node.right)  # Probably trouble
-                if isinstance(right_value, IdentifierOperator):
-                    right_value = right_value.get(self.data)
+                right_value = self.dereference(right_value)
                 info.append('right value {}'.format(right_value))
             raise constructor(' - ' .join(info))
+
+    def dereference(self, value: Any) -> IdentifierOperator:
+        if isinstance(value, IdentifierOperator):
+            return value.get(self.table)
+        else:
+            return value
 
     def assert_true(self, message: str, truthy: Any, node: Node) -> None:
         if not truthy:
@@ -146,7 +179,8 @@ class Walker:
             for item in value:
                 self.print(item)
         elif isinstance(value, IdentifierOperator):
-            self.print_str(value.get(self.data))
+            value = self.dereference(value)
+            self.print(value)
         else:
             self.fail('cannot print unknown value type')
 
@@ -171,10 +205,11 @@ class Walker:
             return array
         elif node.type is NodeType.IDENTIFIER:
             name = node.value
-            if name in self.data:
-                return self.data[name]
-            else:
+            variable, _ = self.table.get(name)
+            if variable.is_undefined:
                 self.fail('variable referenced before assignment', node)
+            else:
+                return variable.value
         elif node.type is NodeType.IDENTIFIER_ARRAY:
             if node.left.type is NodeType.IDENTIFIER:
                 # Leaf node: has name and index
@@ -194,31 +229,34 @@ class Walker:
                 key=self.walk(node.right))
         elif node.type is NodeType.ASSIGN:
             value = self.walk(node.right)  # expression
-            if isinstance(value, IdentifierOperator):
-                # Dereference
-                value = value.get(self.data)
+            value = self.dereference(value)
             if node.left.type is NodeType.IDENTIFIER_ARRAY:
                 identifier_array = self.walk(node.left)
-                identifier_array.set(self.data, value)
+                identifier_array.set(self.table, value)
             elif node.left.type is NodeType.IDENTIFIER_MAP:
                 identifier_map = self.walk(node.left)
-                identifier_map.set(self.data, value)
+                identifier_map.set(self.table, value)
             elif node.left.type is NodeType.IDENTIFIER:
                 identifier = node.left.value
-                self.data[identifier] = value
+                if type(value) is int:
+                    self.table.set(Variable(identifier, VariableType.INT, value))
+                elif type(value) is str:
+                    self.table.set(Variable(identifier, VariableType.STR, value))
+                elif type(value) is list:
+                    self.table.set(Variable(identifier, VariableType.ARRAY, value))
+                elif type(value) is dict:
+                    self.table.set(Variable(identifier, VariableType.MAP, value))
+                else:
+                    self.fail('unknown type - {}'.format(value), node)
             else:
                 self.fail('cannot assign to unknown type')
             return value
         elif node.type in BINARY_OPERATORS:
             operation = BINARY_OPERATORS[node.type]
             left = self.walk(node.left)
-            if isinstance(left, IdentifierOperator):
-                # Dereference
-                left = left.get(self.data)
+            left = self.dereference(left)
             right = self.walk(node.right)
-            if isinstance(right, IdentifierOperator):
-                # Dereference
-                right = right.get(self.data)
+            right = self.dereference(right)
             return operation(left, right)
         elif node.type in UNARY_OPERATORS:
             operation = UNARY_OPERATORS[node.type]
