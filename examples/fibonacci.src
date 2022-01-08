@@ -4,6 +4,7 @@ n = 44;
 i = 1;
 a = 0;
 b = 1;
+w = 0;
 while (< i n) {
     w = + a b;
     a = b;

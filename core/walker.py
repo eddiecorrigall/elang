@@ -1,3 +1,4 @@
+import sys
 from typing import Any, List, Optional, Tuple, Union
 
 from core.ast import Node, NodeType
@@ -133,25 +134,33 @@ class Walker:
     def fail(self, message: str, node: Optional[Node] = None, constructor = None) -> None:
         if constructor is None:
             constructor = lambda message: Exception(message)
+        self.debug(message, node)
+        raise constructor(message)
+
+    def debug_info(self, message: str, node: Node) -> str:
+        info = [
+            message,
+            'node {}'.format(node.type.name),
+        ]
+        if node.value is not None:
+            info.append('value {}'.format(node.value))
+        '''
+        if node.left is not None:
+            left_value = self.walk(node.left)  # Probably trouble
+            left_value = self.dereference(left_value)
+            info.append('left value {}'.format(left_value))
+        if node.right is not None:
+            right_value = self.walk(node.right)  # Probably trouble
+            right_value = self.dereference(right_value)
+            info.append('right value {}'.format(right_value))
+        '''
+        return ' - ' .join(info)
+
+    def debug(self, message: str, node: Optional[Node] = None) -> None:
         # TODO: Debugging information to assiciate node and token
-        if node is None:
-            raise constructor(message)
-        else:
-            info = [
-                message,
-                'node {}'.format(node.type.name),
-            ]
-            if node.value is not None:
-                info.append('value {}'.format(node.value))
-            if node.left is not None:
-                left_value = self.walk(node.left)  # Probably trouble
-                left_value = self.dereference(left_value)
-                info.append('left value {}'.format(left_value))
-            if node.right is not None:
-                right_value = self.walk(node.right)  # Probably trouble
-                right_value = self.dereference(right_value)
-                info.append('right value {}'.format(right_value))
-            raise constructor(' - ' .join(info))
+        if node:
+            message = self.debug_info(message, node)
+        print(message, file=sys.stderr)
 
     def dereference(self, value: Any) -> IdentifierOperator:
         if isinstance(value, IdentifierOperator):
@@ -189,8 +198,13 @@ class Walker:
         if node is None:
             return
         elif node.type is NodeType.SEQUENCE:
-            self.walk(node.right)
             self.walk(node.left)
+            self.walk(node.right)
+        elif node.type is NodeType.BLOCK:
+            self.table.scope_enter()
+            self.walk(node.left)
+            self.walk(node.right)
+            self.table.scope_exit()
         elif node.type is NodeType.STR:
             return node.value
         elif node.type is NodeType.INT:
@@ -207,7 +221,7 @@ class Walker:
             name = node.value
             variable, _ = self.table.get(name)
             if variable.is_undefined:
-                self.fail('variable referenced before assignment', node)
+                self.fail('variable {} referenced before assignment'.format(name), node)
             else:
                 return variable.value
         elif node.type is NodeType.IDENTIFIER_ARRAY:

@@ -8,6 +8,7 @@ from typing import Iterable, Optional
 
 NodeType = Enum('NodeType', [
     'SEQUENCE',
+    'BLOCK',
     'EXPRESSION',
     'ADD',
     'SUBTRACT',

@@ -210,28 +210,28 @@ class Parser:
 
     def parse_while(self) -> Node:
         '''
-        while = "while" expression_parenthesis statement ;
+        while = "while" expression_parenthesis keyword_block ;
         '''
         self.expect(TokenType.KEYWORD_WHILE)
         expression_parenthesis = self.parse_expression_parenthesis()
-        statement = self.parse_statement()
-        return self.make_node(NodeType.WHILE, expression_parenthesis, statement)
+        block = self.parse_keyword_block()
+        return self.make_node(NodeType.WHILE, expression_parenthesis, block)
 
     def parse_if(self) -> Node:
         '''
-        if = "if" expression_parenthesis statement [ "else" statement ] ;
+        if = "if" expression_parenthesis keyword_block [ "else" keyword_block ] ;
         '''
         self.expect(TokenType.KEYWORD_IF)
         expression_parenthesis = self.parse_expression_parenthesis()
-        if_statement = self.parse_statement()
-        else_statement = None
+        if_block = self.parse_keyword_block()
+        else_block = None
         if self.accept(TokenType.KEYWORD_ELSE):
             self.expect(TokenType.KEYWORD_ELSE)
-            else_statement = self.parse_statement()
+            else_block = self.parse_keyword_block()
         return self.make_node(
             NodeType.IF,
             expression_parenthesis,
-            self.make_node(NodeType.IF, if_statement, else_statement))
+            self.make_node(NodeType.IF, if_block, else_block))
 
     def parse_print_character(self) -> Node:
         '''
@@ -261,9 +261,9 @@ class Parser:
         expression_parenthesis = self.parse_expression_parenthesis()
         _assert = self.make_node(NodeType.ASSERT, expression_parenthesis)
         self.expect(TokenType.SYMBOL_SEMICOLON)
-        return _assert        
+        return _assert
 
-    def parse_block(self) -> None:
+    def parse_block(self) -> Node:
         '''
         block = "{" { statement } "}" ;
         '''
@@ -272,9 +272,18 @@ class Parser:
         while not self.accept(TokenType.TERMINAL):
             if self.accept(TokenType.SYMBOL_CLOSE_BRACE):
                 break
-            sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)
+            sequence = self.make_node(NodeType.SEQUENCE, sequence, self.parse_statement())
         self.expect(TokenType.SYMBOL_CLOSE_BRACE)
-        return sequence
+        return self.make_node(NodeType.BLOCK, sequence)
+
+    def parse_keyword_block(self) -> Node:
+        '''
+        keyword_block = block | statement ;
+        '''
+        if self.accept(TokenType.SYMBOL_OPEN_BRACE):
+            return self.parse_block()
+        else:
+            return self.make_node(NodeType.BLOCK, self.parse_statement(), None)
 
     def parse_statement(self) -> Node:
         '''
@@ -313,7 +322,7 @@ class Parser:
             if self.accept(TokenType.SYMBOL_SEMICOLON):
                 self.next_token()
                 continue
-            sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)
+            sequence = self.make_node(NodeType.SEQUENCE, sequence, self.parse_statement())
         if sequence is None:
             sequence = self.make_node(NodeType.SEQUENCE, None)
         return sequence

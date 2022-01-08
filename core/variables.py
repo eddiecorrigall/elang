@@ -27,10 +27,11 @@ class Variable:
         return self.type is VariableType.UNDEFINED
 
     def __repr__(self):
-        return '<{class_name}[{type}] {name}>'.format(
+        return '<{class_name}[{type}] {name}={value}>'.format(
             class_name=self.__class__.__name__,
             type=self.type.name,
-            name=self.name)
+            name=self.name,
+            value=self.value)
 
     def __eq__(self, other):
         return self.is_undefined or self.name == other.name

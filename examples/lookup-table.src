@@ -13,6 +13,8 @@ lastname_criteria = "Clapton";
 
 found = 0;
 index = 0;
+firstname = "unknown";
+lastname = "unknown";
 while (and < index 5 not found) {
     fullname = records @ index;
     firstname = fullname @ 0;
