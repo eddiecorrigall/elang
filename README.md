@@ -7,6 +7,7 @@ Toy programming language written by yours truely.
 - Expressions in polish notation
 - Abstract Syntax Tree Walker
 - Literals: integer, character, string, array, map
+- Scope / name binding
 
 ![Mandlebrot Demo](./demo.gif)
 
@@ -133,8 +134,8 @@ python3 -m unittest --verbose tests.test_lexer_integer_literal.TestIntegerLitera
   - [x] array
   - [x] map
   - [ ] constants / immutable value
-  - [ ] typing / immutable type
-  - [ ] variable scope
+  - [x] typing / immutable type
+  - [x] variable scope
 - [ ] provide token context with AST error
 - [x] print statement with multiple arguments
 - [x] handle print string escape characters

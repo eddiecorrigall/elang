@@ -272,7 +272,7 @@ class Parser:
         while not self.accept(TokenType.TERMINAL):
             if self.accept(TokenType.SYMBOL_CLOSE_BRACE):
                 break
-            sequence = self.make_node(NodeType.SEQUENCE, sequence, self.parse_statement())
+            sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)
         self.expect(TokenType.SYMBOL_CLOSE_BRACE)
         return self.make_node(NodeType.BLOCK, sequence)
 
@@ -283,7 +283,7 @@ class Parser:
         if self.accept(TokenType.SYMBOL_OPEN_BRACE):
             return self.parse_block()
         else:
-            return self.make_node(NodeType.BLOCK, self.parse_statement(), None)
+            return self.make_node(NodeType.BLOCK, self.parse_statement())
 
     def parse_statement(self) -> Node:
         '''
@@ -322,7 +322,7 @@ class Parser:
             if self.accept(TokenType.SYMBOL_SEMICOLON):
                 self.next_token()
                 continue
-            sequence = self.make_node(NodeType.SEQUENCE, sequence, self.parse_statement())
+            sequence = self.make_node(NodeType.SEQUENCE, self.parse_statement(), sequence)
         if sequence is None:
             sequence = self.make_node(NodeType.SEQUENCE, None)
         return sequence

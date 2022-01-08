@@ -145,10 +145,13 @@ class TestParserStatementIf(ParserTestBase):
                 right=Node(
                     type=NodeType.IF,
                     left=Node(
-                        type=NodeType.PRINT_CHARACTER,
+                        type=NodeType.BLOCK,
                         left=Node(
-                            type=NodeType.INT,
-                            value='0',
+                            type=NodeType.PRINT_CHARACTER,
+                            left=Node(
+                                type=NodeType.INT,
+                                value='0',
+                            ),
                         ),
                     ),
                 ),
@@ -186,17 +189,23 @@ class TestParserStatementIf(ParserTestBase):
                 right=Node(
                     type=NodeType.IF,
                     left=Node(
-                        type=NodeType.PRINT_CHARACTER,
+                        type=NodeType.BLOCK,
                         left=Node(
-                            type=NodeType.INT,
-                            value='0',
+                            type=NodeType.PRINT_CHARACTER,
+                            left=Node(
+                                type=NodeType.INT,
+                                value='0',
+                            ),
                         ),
                     ),
                     right=Node(
-                        type=NodeType.PRINT_CHARACTER,
+                        type=NodeType.BLOCK,
                         left=Node(
-                            type=NodeType.INT,
-                            value='1',
+                            type=NodeType.PRINT_CHARACTER,
+                            left=Node(
+                                type=NodeType.INT,
+                                value='1',
+                            ),
                         ),
                     ),
                 ),

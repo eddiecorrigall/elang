@@ -1,0 +1,13 @@
+y = 5;
+{
+    x = 1;
+    if (== 1 x)
+        x = 2;
+
+    if (== 2 x)
+        x = 3;
+    
+    assert(== x 3);
+    assert(== y 5);
+}
+assert(== y 5);

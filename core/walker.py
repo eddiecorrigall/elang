@@ -198,12 +198,11 @@ class Walker:
         if node is None:
             return
         elif node.type is NodeType.SEQUENCE:
-            self.walk(node.left)
             self.walk(node.right)
+            self.walk(node.left)
         elif node.type is NodeType.BLOCK:
             self.table.scope_enter()
             self.walk(node.left)
-            self.walk(node.right)
             self.table.scope_exit()
         elif node.type is NodeType.STR:
             return node.value
