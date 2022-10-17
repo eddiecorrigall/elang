@@ -128,7 +128,8 @@ class Walker:
     def __init__(self):
         self.table = Table()
 
-    def __call__(self, node: Node) -> Any:
+    def __call__(self, node: Node, stdout=None) -> Any:
+        self.stdout = stdout or sys.stdout
         return self.walk(node)
 
     def fail(self, message: str, node: Optional[Node] = None, constructor = None) -> None:
@@ -177,7 +178,7 @@ class Walker:
         value = value.replace(r'\n', '\n')
         # Replace escaped tab in string
         value = value.replace(r'\t', '\t')
-        print(value, end=str())
+        print(value, file=self.stdout, end=str())
 
     def print(self, value: Any) -> None:
         if type(value) is int:
@@ -286,7 +287,7 @@ class Walker:
             # TODO: Why does `putc(144);` cause the walker stdout to stop?
             value = self.walk(node.left)
             character = chr(value)
-            print(character, end=str())
+            print(character, file=self.stdout, end=str())
         elif node.type is NodeType.PRINT_STRING:
             # TODO: handle escaped characters
             value = self.walk(node.left)
